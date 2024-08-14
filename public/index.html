@@ -1,0 +1,55 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="/css/github-dark-dimmed.css" />
+    <link rel="stylesheet" href="/css/chat.css" />
+  </head>
+  <body>
+    <div class="title">
+      <div
+        id="room-title"
+        style="font-size: 24px; font-weight: bold; padding: 10px;"
+      ></div>
+      <div
+        id="room-title-count"
+        style="color: rgb(255, 208, 0); padding: 18px;"
+      ></div>
+    </div>
+    <div class="chat-box">
+      <div id="chat-toggle-btn">채팅방 리스</div>
+      <div id="chat-room-list"></div>
+    </div>
+    <form id="chat-form">
+      <textarea id="msg-input"></textarea>
+      <input
+        id="set-id"
+        type="text"
+        placeholder="name"
+        onchange="saveMyName(event)"
+      />
+      <button type="button" onclick="copyInput()">copy</button>
+      <button type="button" onclick="clearInput()">clear</button>
+      <button type="button" onclick="deleteImage()">delete img</button>
+      <button type="button" onclick="creatRoom()">make room</button>
+      <div>
+        <div>
+          <img
+            id="output-image"
+            class="copied-img"
+            src=""
+            style="cursor: copy;"
+            title="copy"
+            onclick="copyImage()"
+          />
+        </div>
+      </div>
+    </form>
+    <div id="is-typing"></div>
+    <div id="chat-msg"></div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="./js/library/highlight.min.js"></script>
+    <script src="./js/chat/common.js"></script>
+    <script src="./js/chat/db.js"></script>
+    <script src="./js/chat/config.js"></script>
+    <script src="./js/chat/load.js"></script>
+  </body>
+</html>

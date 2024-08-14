@@ -1,0 +1,54 @@
+@keyframes blink {
+      0% {
+        color: #38e70e;
+      }
+      30% {
+        color: #5812da;
+      }
+      60% {
+        color: #16c7f3;
+      }
+      80% {
+        color: #ff4c90;
+      }
+      100% {
+        color: #38e70e;
+      }
+    }
+    #todo {
+      display: none;
+      width: 45%;
+      margin-left: 20px;
+    }
+    #todo input {
+      width: 100%;
+      padding: 3px;
+      outline: none;
+    }
+    #todo textarea {
+      width: 100%;
+      height: 50px;
+      padding: 3px;
+      outline: none;
+    }
+    .todo-box {
+      margin-top: 10px;
+    }
+    .todo-box-header {
+      margin-bottom: 19px;
+    }
+    .todo-box-button {
+      text-align: right;
+    }
+    .badge {
+      font-size: 10px;
+      text-align: right;
+      width: 15px;
+      height: 15px;
+      text-align: center;
+    }
+    .badge-active {
+      background-color: red;
+      border-radius: 50%;
+      color: white;
+    }

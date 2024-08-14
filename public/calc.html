@@ -1,0 +1,50 @@
+<html>
+  <head></head>
+  <link href="/css/github-dark-dimmed.css" rel="stylesheet" />
+  <link href="/css/dark-calc.css" rel="stylesheet" />
+  <link href="/css/white-calc.css" rel="stylesheet" />
+  <link href="/css/calc.css" rel="stylesheet" />
+  <body id="dark">
+    <div class="title">
+      who brought coffee
+      <span id="todayBox">?</span>
+      <span id="whosCoffee"></span>
+    </div>
+    <div style="display: flex;">
+      <select id="selectBox"></select>
+      <button type="button" onClick="submit()">확인</button>
+      <button type="button" onClick="toggleTheme()">테마변경</button>
+    </div>
+    <div style="display: flex;">
+      <div id="calendarLayout">
+        <div id="calendarInfo"></div>
+        <div id="calendarBox"></div>
+      </div>
+      <div id="todo">
+        <div class="todo-box todo-box-header">
+          <span id="todo-date"></span>
+          할일
+        </div>
+        <div class="todo-box">
+          <textarea id="todo-box-msg"></textarea>
+        </div>
+        <div class="todo-box todo-box-button">
+          <button type="button" onclick="saveTodo()">확인</button>
+          <button type="button" onclick="closeTodo()">닫기</button>
+        </div>
+        <div class="todo-box">
+          <div id="todo-list"></div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/library/lodash.js"></script>
+  <script src="/js/library/korean-lunar-calendar.js"></script>
+  <script src="/js/library/highlight.min.js"></script>
+  <script src="/js/calc/config.js"></script>
+  <script src="/js/calc/load.js"></script>
+  <script src="/js/calc/common.js"></script>
+  <script src="/js/calc/db.js"></script>
+  <script></script>
+</html>
