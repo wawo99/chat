@@ -64,3 +64,7 @@ const todoBoxMsg = document.getElementById('todo-box-msg')
 const todoList = document.getElementById('todo-list')
 const calendarBox = document.getElementById('calendarBox')
 let db
+
+// gnb
+const menuLogo = document.getElementById('menu-logo')
+const menuBox = document.getElementById('menu-box')

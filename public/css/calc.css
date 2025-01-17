@@ -157,3 +157,30 @@
         top: 1000px;
       }
     }
+
+    .open-menu-animation {
+      animation: open-menu 0.5s ease-in-out forwards;
+    }
+
+    .close-menu-animation {
+      animation: close-menu 0.5s ease-in-out forwards;
+    }
+
+    @keyframes open-menu {
+      0% {
+        top: -1500px;
+      }
+      100% {
+        top: 0px;
+      }
+    }
+    @keyframes close-menu {
+      100% {
+        top: -1500px;
+      }
+      0% {
+        top: 0px;
+      }
+    }
+
+

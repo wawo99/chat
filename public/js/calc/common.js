@@ -295,7 +295,7 @@ async function createCalendar(isChangeYear) {
   const effectBox = document.querySelectorAll('.c-box')
   effectBox.forEach((box) => {
     box.style.animationDelay = `${Math.random() * 0.5}s`
-    const rect = box.getBoundingClientReact()
+    const rect = box.getBoundingClientRect()
     box.style.top = `${rect.top}px`
     box.style.left = `${rect.left}px`
   })
