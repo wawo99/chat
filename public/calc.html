@@ -8,19 +8,43 @@
     <div id="menu-logo">S</div>
     <div id="menu-box">
       <ul id="menu-card" class="cards">
-        <li>소개1</li>
-        <li>소개2</li>
-        <li>소개3</li>
-        <li>소개4</li>
+        <li data-target="menu1">휴가</li>
+        <li data-target="menu2">백업</li>
+        <li data-target="menu3">복구</li>
       </ul>
-      <div>dd</div>
+      <div id="menu-content">
+        <div id="menu1" class="menu">
+          <div>휴가 추가 하기</div>
+          <div>
+            <input type="date" id="holidayDate" />
+            <input type="text" id="holidayName" placeholder="휴가명" />
+            <button type="button" onclick="insertHoliday()">추가</button>
+          </div>
+          <br />
+          <div>
+            <span>휴가목록</span>
+            <div id="holidayList"></div>
+          </div>
+        </div>
+        <div id="menu2" class="menu">
+          <button type="button" onclick="exportIndexedDB('calendarDB')">
+            데이터백업
+          </button>
+        </div>
+        <div id="menu3" class="menu">
+          <input type="file" id="importFile" accept=".json" />
+          <button type="button" onclick="importIndexedDB('calendarDB')">
+            데이터복원
+          </button>
+        </div>
+      </div>
     </div>
     <div class="title">
       who brought coffee
       <span id="todayBox">?</span>
       <span id="whosCoffee"></span>
     </div>
-    <div style="display: flex;">
+    <div style="display: flex">
       <select id="selectBox"></select>
       <button type="button" onClick="submit()">확인</button>
       <button type="button" onClick="toggleTheme()">테마변경</button>
@@ -55,6 +79,7 @@
   <script src="/js/calc/config.js"></script>
   <script src="/js/calc/load.js"></script>
   <script src="/js/calc/common.js"></script>
+  <script src="/js/calc/util-data-recovery.js"></script>
   <script src="/js/calc/db.js"></script>
   <script></script>
 </html>
