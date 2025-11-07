@@ -1,142 +1,142 @@
 #white {
-    background-color: white;
+  background-color: white;
 }
 #white .순도 {
-    color: rgb(240,225,13);
+  color: rgb(240, 225, 13);
 }
 #white .우현 {
-    color: rgb(43,226,195);
+  color: rgb(43, 226, 195);
 }
 #white .쿠폰 {
-    color: rgb(255,19,196);
+  color: rgb(255, 19, 196);
 }
 #white .title {
-    padding: 10px;
-    font-size:11px;
-    font-weight: bold;
-    color: rgb(218,221,32);
+  padding: 10px;
+  font-size: 11px;
+  font-weight: bold;
+  color: rgb(218, 221, 32);
 }
 #white select {
-    height: 30px;
-    border: 1px solid rgb(230, 230, 230);
-    background-color: #ffffff;
-    padding: 3px;
-    margin: 2px 2px 2px 2px;
-    color: #444444;
-    outline: none;
+  height: 30px;
+  border: 1px solid rgb(230, 230, 230);
+  background-color: #ffffff;
+  padding: 3px;
+  margin: 2px 2px 2px 2px;
+  color: #444444;
+  outline: none;
 }
 #white button {
-    height: 30px;
-    border: 1px solid rgb(230, 230, 230);
-    background-color: #ffffff;
-    padding: 3px;
-    margin: auto 2px;
-    color: #444444;
+  height: 30px;
+  border: 1px solid rgb(230, 230, 230);
+  background-color: #ffffff;
+  padding: 3px;
+  margin: auto 2px;
+  color: #444444;
 }
 #white button:hover {
-    background-color: #0ca9e7;
-    color: #fbff00;
+  background-color: #0ca9e7;
+  color: #fbff00;
 }
 #white .remove {
-    height: 21px;
-    position: absolute;
-    padding: 0 6px;
+  height: 21px;
+  position: absolute;
+  padding: 0 6px;
 }
 #white ul {
-    padding: 0;
-    margin: 10px 0;
-    list-style-type:none;
+  padding: 0;
+  margin: 10px 0;
+  list-style-type: none;
 }
 #white #whosCoffee {
-    color: #38e70e;
-    font-size: 14px;
-    margin-left: 10px;
-    animation: blink 1s infinite;   
+  color: #38e70e;
+  font-size: 14px;
+  margin-left: 10px;
+  animation: blink 1s infinite;
 }
 #white #calendarBox {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    width:100%;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  width: 100%;
 }
 #white .box {
-    border: 1px dotted #dadada;
+  border: 1px dotted #dadada;
 }
 #white .content {
-    width:100%;
-    height: 60%;
-    display: flex;
-    align-items: center;
-    vertical-align: middle;
+  width: 100%;
+  height: 60%;
+  display: flex;
+  align-items: center;
+  vertical-align: middle;
 }
 #white .content span {
-    margin: auto;
+  margin: auto;
 }
 #white .box div {
-    text-align: center;
+  text-align: center;
 }
 #white .empty-box {
-    border: 1px dotted #dadada;
+  border: 1px dotted #dadada;
 }
 #white .box .date {
-    color: #929292;
+  color: #929292;
 }
 #white .empty-box .date {
-    color: #4b4b4b;
+  color: #4b4b4b;
 }
 #white #calendarLayout {
-    width: 50%;
+  width: 50%;
 }
 #white #calendarInfo {
-    text-align: right;
-    height: 50px;
+  text-align: right;
+  height: 50px;
 }
-#white #calendarInfo span{
-    font-size:x-large;
-    color: #4f4f4f;
-    margin:10px;
+#white #calendarInfo span {
+  font-size: x-large;
+  color: #4f4f4f;
+  margin: 10px;
 }
-#white .lunar-date{
-    font-size: 11px;
-    color: #756597;
+#white .lunar-date {
+  font-size: 11px;
+  color: #756597;
 }
-#white .event-date{
-    font-size: 11px;
-    color: #ffcf4b;
-    margin-left:5px;
+#white .event-date {
+  font-size: 11px;
+  color: #ffcf4b;
+  margin-left: 5px;
 }
-#white .holi-date{
-    font-size: 11px;
-    color: #ff514b;
-    margin-left:5px;
+#white .holi-date {
+  font-size: 11px;
+  color: #ff514b;
+  margin-left: 5px;
 }
-#white .term-date{
-    font-size: 11px;
-    color: #3e78f7;
-    margin-left:5px;
+#white .term-date {
+  font-size: 11px;
+  color: #3e78f7;
+  margin-left: 5px;
 }
 #white .btn {
-    cursor: pointer;
-    user-select: none;
+  cursor: pointer;
+  user-select: none;
 }
 #white .btn:hover {
-    color: #16c7f3 !important;
+  color: #16c7f3 !important;
 }
 #white .sunday {
-    color: rgb(241,13,120)
+  color: rgb(251, 95, 95);
 }
 #white .saturday {
-    color: rgb(52,8,248)
+  color: rgb(255, 255, 255);
 }
 #white .holiday {
-    background-color: #b6b6b6;
-    opacity: 0.6;
+  background-color: #b6b6b6;
+  opacity: 0.6;
 }
 #white #todo input,
 #white #todo textarea {
-    border: 1px solid rgb(230, 230, 230);
-    background-color: #ffffff;
-    color: #756597;
+  border: 1px solid rgb(230, 230, 230);
+  background-color: #ffffff;
+  color: #756597;
 }
-#white .c-box-active{
-    background-color: #0ca9e7;
+#white .c-box-active {
+  background-color: #0ca9e7;
 }

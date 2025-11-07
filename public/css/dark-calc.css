@@ -1,145 +1,144 @@
 #dark {
-    background-color: black;
+  background-color: black;
 }
 #dark .순도 {
-    color: rgb(240,225,13);
+  color: rgb(240, 225, 13);
 }
 #dark .우현 {
-    color: rgb(43,226,195);
+  color: rgb(43, 226, 195);
 }
 #dark .쿠폰 {
-    color: rgb(255,19,196);
+  color: rgb(255, 19, 196);
 }
 #dark .title {
-    padding: 10px;
-    font-size:11px;
-    font-weight: bold;
-    color: rgb(218,221,32);
+  padding: 10px;
+  font-size: 11px;
+  font-weight: bold;
+  color: rgb(218, 221, 32);
 }
 #dark select {
-    height: 30px;
-    border: 1px solid rebeccapurple;
-    background-color: #462079;
-    padding: 3px;
-    margin: 2px 2px 2px 2px;
-    color: #756597;
-    outline: none;
+  height: 30px;
+  border: 1px solid rebeccapurple;
+  background-color: #462079;
+  padding: 3px;
+  margin: 2px 2px 2px 2px;
+  color: #756597;
+  outline: none;
 }
 #dark button {
-    height: 30px;
-    border: 1px solid rebeccapurple;
-    background-color: #462079;
-    padding: 3px;
-    margin: auto 2px;
-    color: #756597;
+  height: 30px;
+  border: 1px solid rebeccapurple;
+  background-color: #462079;
+  padding: 3px;
+  margin: auto 2px;
+  color: #756597;
 }
 #dark button:hover {
-    background-color: #5c2e99;
-    color: #fbff00;
+  background-color: #5c2e99;
+  color: #fbff00;
 }
 #dark .remove {
-    height: 21px;
-    position: absolute;
-    padding: 0 6px;
+  height: 21px;
+  position: absolute;
+  padding: 0 6px;
 }
 #dark ul {
-    padding: 0;
-    margin: 10px 0;
-    list-style-type:none;
+  padding: 0;
+  margin: 10px 0;
+  list-style-type: none;
 }
 #dark #whosCoffee {
-    color: #38e70e;
-    font-size: 14px;
-    margin-left: 10px;
-    animation: blink 1s infinite;   
+  color: #38e70e;
+  font-size: 14px;
+  margin-left: 10px;
+  animation: blink 1s infinite;
 }
 #dark #calendarBox {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    width:100%;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  width: 100%;
 }
 #dark .box {
-    border: 1px solid rgb(48,48,48);
+  border: 1px solid rgb(48, 48, 48);
 }
 #dark .content {
-    width:100%;
-    height: 60%;
-    display: flex;
-    align-items: center;
-    vertical-align: middle;
+  width: 100%;
+  height: 60%;
+  display: flex;
+  align-items: center;
+  vertical-align: middle;
 }
 #dark .content span {
-    margin: auto;
+  margin: auto;
 }
 #dark .box div {
-    text-align: center;
+  text-align: center;
 }
 #dark .empty-box {
-    border: 1px solid rgb(44,44,44)
+  border: 1px solid rgb(44, 44, 44);
 }
 #dark .box .date {
-    color: #929292;
+  color: #929292;
 }
 #dark .empty-box .date {
-    color: #4b4b4b;
+  color: #4b4b4b;
 }
 #dark #calendarLayout {
-    width: 50%;
+  width: 50%;
 }
 #dark #calendarInfo {
-    text-align: right;
-    height: 50px;
+  text-align: right;
+  height: 50px;
 }
-#dark #calendarInfo span{
-    font-size:x-large;
-    color: #4f4f4f;
-    margin:10px;
+#dark #calendarInfo span {
+  font-size: x-large;
+  color: #4f4f4f;
+  margin: 10px;
 }
-#dark .lunar-date{
-    font-size: 11px;
-    color: #756597;
+#dark .lunar-date {
+  font-size: 11px;
+  color: #756597;
 }
-#dark .event-date{
-    font-size: 11px;
-    color: #ffcf4b;
-    margin-left:5px;
+#dark .event-date {
+  font-size: 11px;
+  color: #ffcf4b;
+  margin-left: 5px;
 }
-#dark .holi-date{
-    font-size: 11px;
-    color: #ff514b;
-    margin-left:5px;
+#dark .holi-date {
+  font-size: 11px;
+  color: #ff514b;
+  margin-left: 5px;
 }
-#dark .term-date{
-    font-size: 11px;
-    color: #3e78f7;
-    margin-left:5px;
+#dark .term-date {
+  font-size: 11px;
+  color: #3e78f7;
+  margin-left: 5px;
 }
 #dark .btn {
-    cursor: pointer;
-    user-select: none;
+  cursor: pointer;
+  user-select: none;
 }
 #dark .btn:hover {
-    color: #16c7f3 !important;
+  color: #16c7f3 !important;
 }
 #dark .sunday {
-    color: rgb(241,13,120)
+  color: rgb(241, 13, 120);
 }
 #dark .saturday {
-    color: rgb(52,8,248)
+  color: rgb(61, 123, 147);
 }
 #dark .holiday {
-    background-color: #222222;
-    opacity: 0.6;
+  background-color: rgba(70, 70, 70, 0.5);
 }
 #dark #todo input,
 #dark #todo textarea {
-    border: 1px solid rebeccapurple;
-    background-color: #462079;
-    color: #756597;
+  border: 1px solid rebeccapurple;
+  background-color: #462079;
+  color: #756597;
 }
-#dark .c-box-active{
-    background-color: #462079;
+#dark .c-box-active {
+  background-color: #462079;
 }
 #dark .todo-box-header {
-    color: white
+  color: white;
 }

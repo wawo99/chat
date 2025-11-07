@@ -29,29 +29,48 @@ function getHolidayData() {
     clearTimeout(loadData);
   });
 }
+function changeHolidayYear() {
+  const holidayYearSelect = document.getElementById("holidayYear");
+  const year = holidayYearSelect.value;
+  holidayList(year);
+}
 
-function holidayList() {
+function holidayList(year = `${new Date().getFullYear()}`) {
   const holidayList = document.getElementById("holidayList");
+  const holidayListCount = document.getElementById("holidayListCount");
+  const holidayYear = document.getElementById("holidayYear");
   holidayList.innerHTML = "";
-  console.log(eventDay.solarEvent);
+  holidayListCount.innerHTML = "";
+  holidayYear.innerHTML = "<option value='all'>전체</option>";
+  const holidayYears = {};
+  let holidayCount = 0;
   Object.entries(eventDay.solarEvent).map((k, v) => {
-    console.log(k, v);
+    // console.log(k, v, k[0].slice(0, 4));
+    const holidayYearKey = k[0].slice(0, 4);
+    holidayYears[holidayYearKey] = true;
+    if (year != "all" && holidayYearKey !== year) return;
     const holidayItem = document.createElement("div");
     const holidayItemBtn = document.createElement("button");
-    holidayItem.textContent = `${k[0]} - ${k[1]} `;
+    holidayItem.textContent = `${k[0]} : ${k[1]} `;
     holidayItemBtn.textContent = "X";
     holidayItemBtn.addEventListener("click", () => {
-      const selectDay = changedDate ? new Date(changedDate) : new Date();
-      const year = selectDay.getFullYear();
-      console.log(`${year}-${k[0].slice(0, 2)}-${k[0].slice(2)}`);
       connectionDB("holiday", "deleteHoliday", {
-        key: `${year}-${k[0].slice(0, 2)}-${k[0].slice(2)}`,
+        key: k[0],
         date: k[0],
       });
     });
     holidayItem.appendChild(holidayItemBtn);
     holidayList.appendChild(holidayItem);
+    holidayCount++;
   });
+  Object.keys(holidayYears).forEach((y) => {
+    const option = document.createElement("option");
+    option.value = y;
+    option.textContent = y;
+    option.selected = year === y;
+    holidayYear.appendChild(option);
+  });
+  holidayListCount.textContent = `(${holidayCount})`;
 }
 
 function toggleTheme(init = false) {
@@ -258,8 +277,10 @@ async function createCalendar(isChangeYear) {
 
     const solarDateKey = `${month}${date}`;
     const lunarDateKey = `${lunarDate.month}${lunarDate.day}`;
+    const solarFullDateKey = `${year}-${month}-${date}`;
+
     const eventDayElement = getDateTemplate(
-      eventDay.solarEvent[solarDateKey],
+      eventDay.solarEvent[solarFullDateKey],
       "event-date"
     );
     if (isCalc) {

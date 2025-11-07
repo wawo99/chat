@@ -58,11 +58,14 @@ function crudData(storeName, type, calendarData) {
       };
     },
     selectHolidayAll: function async() {
-      dataStore.openCursor().onsuccess = async (res) => {
+      dataStore.index("date").openCursor(null, "prev").onsuccess = async (
+        res
+      ) => {
         const cursor = res.target.result;
         if (!cursor) return;
         const cursorData = { ...cursor.value, key: cursor.primaryKey };
-        const date = cursorData.date.slice(5).replace("-", "");
+        // const date = cursorData.date.slice(5).replace("-", "");
+        const date = cursorData.date;
         console.log("TEST eventDay.solarEventKey", eventDay.solarEventKey);
         !eventDay.solarEventKey && (eventDay.solarEventKey = {});
         console.log("TEST eventDay.solarEventKey", eventDay.solarEventKey);

@@ -194,3 +194,12 @@ body {
 .cards li:hover {
   color: #5812da;
 }
+
+.sub-title {
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.mb5 {
+  margin-bottom: 5px;
+}

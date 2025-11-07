@@ -14,7 +14,7 @@
       </ul>
       <div id="menu-content">
         <div id="menu1" class="menu">
-          <div>휴가 추가 하기</div>
+          <div class="sub-title mb5">휴가 추가 하기</div>
           <div>
             <input type="date" id="holidayDate" />
             <input type="text" id="holidayName" placeholder="휴가명" />
@@ -22,7 +22,16 @@
           </div>
           <br />
           <div>
-            <span>휴가목록</span>
+            <div class="mb5">
+              <span class="sub-title">휴가목록</span>
+              <span id="holidayListCount"></span>
+              <span class="sub-title"
+                ><select
+                  id="holidayYear"
+                  onchange="changeHolidayYear()"
+                ></select
+              ></span>
+            </div>
             <div id="holidayList"></div>
           </div>
         </div>
