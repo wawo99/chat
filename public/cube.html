@@ -1,0 +1,97 @@
+<div class="scene">
+  <div class="cube" id="cube">
+    <div class="face front">Front</div>
+    <div class="face back">Back</div>
+    <div class="face top">Top</div>
+    <div class="face bottom">Bottom</div>
+    <div class="face left">Left</div>
+    <div class="face right">Right</div>
+  </div>
+</div>
+
+<div class="buttons">
+  <button id="leftBtn">◀ Left</button>
+  <button id="rightBtn">Right ▶</button>
+</div>
+
+<style>
+  .scene {
+    width: 600px;
+    height: 600px;
+    margin: 50px auto;
+    perspective: 600px;
+  }
+
+  .cube {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.8s ease;
+  }
+
+  /* 면 스타일 */
+  .face {
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    background: rgba(0, 150, 255, 0.7);
+    border: 2px solid #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    font-weight: bold;
+    color: #fff;
+  }
+
+  /* 각 면 배치 */
+  .front {
+    transform: rotateY(0deg) translateZ(300px);
+  }
+  .back {
+    transform: rotateY(180deg) translateZ(300px);
+  }
+  .right {
+    transform: rotateY(90deg) translateZ(300px);
+  }
+  .left {
+    transform: rotateY(-90deg) translateZ(300px);
+  }
+  .top {
+    transform: rotateX(90deg) translateZ(300px);
+  }
+  .bottom {
+    transform: rotateX(-90deg) translateZ(300px);
+  }
+
+  .buttons {
+    text-align: center;
+    margin-top: 420px;
+  }
+
+  button {
+    margin: 10px;
+    padding: 10px 20px;
+    font-size: 18px;
+  }
+</style>
+<script>
+  const cube = document.getElementById("cube");
+  const leftBtn = document.getElementById("leftBtn");
+  const rightBtn = document.getElementById("rightBtn");
+
+  let rotationY = 0;
+
+  // ▶ 오른쪽 회전 (Y축 -90deg)
+  rightBtn.addEventListener("click", () => {
+    rotationY -= 90;
+    cube.style.transform = `rotateY(${rotationY}deg)`;
+  });
+
+  // ◀ 왼쪽 회전 (Y축 +90deg)
+  leftBtn.addEventListener("click", () => {
+    rotationY += 90;
+    cube.style.transform = `rotateY(${rotationY}deg)`;
+  });
+</script>

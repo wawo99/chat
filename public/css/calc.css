@@ -19,6 +19,7 @@
   display: none;
   width: 45%;
   margin-left: 20px;
+  z-index: 2;
 }
 #todo input {
   width: 100%;
@@ -48,7 +49,7 @@
   text-align: center;
 }
 .badge-active {
-  background-color: red;
+  background-color: rgb(113, 29, 142);
   border-radius: 50%;
   color: white;
 }
@@ -124,6 +125,8 @@ body {
 
 #calendarLayout {
   width: 50%;
+  transform-style: preserve-3d;
+  transition: transform 0.8s ease;
 }
 
 @media (max-width: 500px) {
@@ -202,4 +205,72 @@ body {
 
 .mb5 {
   margin-bottom: 5px;
+}
+
+.todo-checkbox {
+  width: 16px !important;
+  height: 16px !important;
+}
+
+.calendar-list-box-mask {
+  position: absolute;
+  right: 10px;
+  width: 46%;
+  background-color: black;
+  z-index: 1;
+  top: 0;
+  bottom: 0;
+}
+
+.calendar-list-box {
+  color: white;
+  position: absolute;
+  right: 10px;
+  width: 46%;
+  font-size: 11px;
+  font-weight: 200;
+  z-index: 0;
+  transform-style: preserve-3d;
+  transition: transform 0.8s ease;
+  overflow-y: auto;
+  top: 0;
+  bottom: 0;
+  padding: 45px 0;
+}
+
+.icon {
+  cursor: pointer;
+}
+.msg-list-date {
+  color: #5d2e7f;
+  font-size: 12px;
+  font-weight: bold;
+}
+.msg-list-msg {
+  margin-left: 10px;
+  margin-top: 6px;
+  margin-bottom: 20px;
+}
+
+/* 스크롤바 전체 영역 */
+::-webkit-scrollbar {
+  width: 6px; /* 세로스크롤 폭 */
+  height: 6px; /* 가로스크롤 높이 */
+}
+
+/* 스크롤바 트랙 (배경) */
+::-webkit-scrollbar-track {
+  background: #1a1a1a;
+  border-radius: 6px;
+}
+
+/* 스크롤바 막대(thumb) */
+::-webkit-scrollbar-thumb {
+  background: #4b4b4b;
+  border-radius: 6px;
+}
+
+/* 마우스 오버 시 thumb */
+::-webkit-scrollbar-thumb:hover {
+  background: #313131;
 }

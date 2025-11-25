@@ -4,6 +4,7 @@
   <link href="/css/dark-calc.css" rel="stylesheet" />
   <link href="/css/white-calc.css" rel="stylesheet" />
   <link href="/css/calc.css" rel="stylesheet" />
+  <link href="/css/cube.css" rel="stylesheet" />
   <body id="dark">
     <div id="menu-logo">S</div>
     <div id="menu-box">
@@ -48,25 +49,37 @@
         </div>
       </div>
     </div>
-    <div class="title">
-      who brought coffee
-      <span id="todayBox">?</span>
-      <span id="whosCoffee"></span>
+    <div id="coffee-box">
+      <div class="title">
+        who brought coffee
+        <span id="todayBox">?</span>
+        <span id="whosCoffee"></span>
+      </div>
+      <div style="display: flex">
+        <select id="selectBox"></select>
+        <button type="button" onClick="submit()">확인</button>
+        <button type="button" onClick="toggleTheme()">테마변경</button>
+      </div>
     </div>
-    <div style="display: flex">
-      <select id="selectBox"></select>
-      <button type="button" onClick="submit()">확인</button>
-      <button type="button" onClick="toggleTheme()">테마변경</button>
-    </div>
+    <div id="convert-calendar-list" class="icon">↔️</div>
     <div class="box_flex">
       <div id="calendarLayout">
         <div id="calendarInfo"></div>
         <div id="calendarBox"></div>
       </div>
+      <div class="calendar-list-box-mask"></div>
+      <div id="calendarList" class="calendar-list-box"></div>
       <div id="todo">
         <div class="todo-box todo-box-header">
           <span id="todo-date"></span>
-          할일
+          <span>휴가</span>
+          <span
+            ><input
+              type="checkbox"
+              onchange="updateHoliday()"
+              id="todo-checked-holiday"
+              class="todo-checkbox"
+          /></span>
         </div>
         <div class="todo-box">
           <textarea id="todo-box-msg"></textarea>

@@ -10,13 +10,17 @@ windowTheme.addEventListener("change", (e) => {
 });
 socket.emit("checked date list");
 socket.on("checked date list", (checkedList) => {
-  // console.log('checked date list', { checkedList })
+  // console.log("checked date list", { checkedList });
   checkedListData = checkedList;
   getHolidayData();
 });
-window.addEventListener("resize", async function () {
-  await createCalendar();
-  checkDateList(checkedListData);
+
+socket.on("calendarRefesh", ({ date, num }) => {
+  // console.log("calendarRefesh", date);
+  createCalendar();
+  // createCalendar(false, false);
+  // location.reload();
+  // setCountBadge(date, num);
 });
 
 menuLogo.addEventListener("click", function () {
@@ -46,3 +50,24 @@ menuCard.addEventListener("click", (e) => {
 
 // 초기 상태: 첫 번째 탭 자동 선택
 document.querySelector("#menu-card li").click();
+
+// 달력 리스트 스위치 버튼
+let transformX = 0;
+convertCalendarList.addEventListener("click", async (e) => {
+  transformX = transformX === 0 ? getComputedStyle(calendarLayout).width : 0;
+  console.log(getComputedStyle(calendarLayout).width);
+  calendarLayout.style.transform = `translateX(-${transformX})`;
+  calendarList.style.transform = `translateX(-${transformX})`;
+});
+
+// 창 크기 변경 시 달력 다시 생성 달력 할일 리스트 사이즈 조정
+window.addEventListener("resize", async (e) => {
+  await createCalendar();
+  checkDateList(checkedListData);
+
+  if (transformX === 0) return;
+
+  transformX = getComputedStyle(calendarLayout).width;
+  calendarLayout.style.transform = `translateX(-${transformX})`;
+  calendarList.style.transform = `translateX(-${transformX})`;
+});

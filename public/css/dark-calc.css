@@ -26,12 +26,12 @@
   outline: none;
 }
 #dark button {
-  height: 30px;
   border: 1px solid rebeccapurple;
   background-color: #462079;
-  padding: 3px;
   margin: auto 2px;
   color: #756597;
+  padding: 2px 10px;
+  font-size: 11px;
 }
 #dark button:hover {
   background-color: #5c2e99;
@@ -59,7 +59,7 @@
   width: 100%;
 }
 #dark .box {
-  border: 1px solid rgb(48, 48, 48);
+  border: 1px solid rgb(28, 28, 28);
 }
 #dark .content {
   width: 100%;
@@ -75,7 +75,7 @@
   text-align: center;
 }
 #dark .empty-box {
-  border: 1px solid rgb(44, 44, 44);
+  border: 1px solid rgb(20, 20, 20);
 }
 #dark .box .date {
   color: #929292;
@@ -106,12 +106,12 @@
 }
 #dark .holi-date {
   font-size: 11px;
-  color: #ff514b;
+  color: #9643ef;
   margin-left: 5px;
 }
 #dark .term-date {
   font-size: 11px;
-  color: #3e78f7;
+  color: #717171;
   margin-left: 5px;
 }
 #dark .btn {
@@ -119,16 +119,16 @@
   user-select: none;
 }
 #dark .btn:hover {
-  color: #16c7f3 !important;
+  color: #462079 !important;
 }
 #dark .sunday {
-  color: rgb(241, 13, 120);
+  color: rgb(71, 71, 71);
 }
 #dark .saturday {
-  color: rgb(61, 123, 147);
+  color: rgb(86, 86, 86);
 }
 #dark .holiday {
-  background-color: rgba(70, 70, 70, 0.5);
+  background-color: rgba(70, 70, 70, 0.35);
 }
 #dark #todo input,
 #dark #todo textarea {
@@ -140,5 +140,5 @@
   background-color: #462079;
 }
 #dark .todo-box-header {
-  color: white;
+  color: rgb(190, 155, 195);
 }

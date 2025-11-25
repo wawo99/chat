@@ -36,7 +36,10 @@ function crudData(storeName, type, calendarData) {
     insert: function () {
       // console.log('insert')
       countBadge(calendarData.date, 1);
-      dataStore.add({ pk: Date.now(), ...calendarData });
+      const req = dataStore.add({ pk: Date.now(), ...calendarData });
+      req.onsuccess = (res) => {
+        appendData({ ...calendarData, key: res.target.result });
+      };
     },
     insertHoliday: function () {
       // console.log('insert')
@@ -44,18 +47,20 @@ function crudData(storeName, type, calendarData) {
         res
       ) => {
         const cursorData = res.target.result;
-        console.log("TEST eventDay.solarEventKey", cursorData);
+        // console.log("TEST eventDay.solarEventKey", cursorData);
         getHolidayData();
       };
     },
     selectAll: function () {
-      dataStore.openCursor().onsuccess = (res) => {
+      dataStore.index("date").openCursor(null, "prev").onsuccess = (res) => {
         const cursor = res.target.result;
         if (!cursor) return;
         const cursorData = { ...cursor.value, key: cursor.primaryKey };
         countBadge(cursorData.date, 1);
+        createListData(cursorData);
         cursor.continue();
       };
+      // console.log("TEST select all complete");
     },
     selectHolidayAll: function async() {
       dataStore.index("date").openCursor(null, "prev").onsuccess = async (
@@ -66,13 +71,14 @@ function crudData(storeName, type, calendarData) {
         const cursorData = { ...cursor.value, key: cursor.primaryKey };
         // const date = cursorData.date.slice(5).replace("-", "");
         const date = cursorData.date;
-        console.log("TEST eventDay.solarEventKey", eventDay.solarEventKey);
+        // console.log("TEST eventDay.solarEventKey", eventDay.solarEventKey);
         !eventDay.solarEventKey && (eventDay.solarEventKey = {});
-        console.log("TEST eventDay.solarEventKey", eventDay.solarEventKey);
+        // console.log("TEST eventDay.solarEventKey", eventDay.solarEventKey);
         eventDay.solarEvent[date] = cursorData.name;
         eventDay.solarEventKey[date] = cursorData.key;
         holidayList();
         cursor.continue();
+        // console.log("TEST select holiday all complete");
       };
     },
     select: function () {
@@ -103,7 +109,7 @@ function crudData(storeName, type, calendarData) {
     // },
     delete: function () {
       const request = dataStore.delete(calendarData.key);
-      console.log("delete request", calendarData.key);
+      // console.log("delete request", calendarData.key);
       request.onsuccess = (res) => {
         countBadge(calendarData.date, -1);
         loadData(todoDate.textContent);

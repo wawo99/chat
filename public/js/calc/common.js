@@ -20,6 +20,21 @@ async function getDateApi(year) {
     });
 }
 
+// 휴가 업데이트
+function updateHoliday() {
+  // console.log(todoDate.textContent);
+  connectionDB("holiday", "deleteHoliday", {
+    key: todoDate.textContent,
+    date: todoDate.textContent,
+  });
+  if (todoCheckedHoliday.checked) {
+    connectionDB("holiday", "insertHoliday", {
+      date: todoDate.textContent,
+      name: "월차",
+    });
+  }
+}
+
 // 휴가 설정 데이터 가져오기
 function getHolidayData() {
   connectionDB("holiday", "selectHolidayAll", {});
@@ -27,7 +42,7 @@ function getHolidayData() {
     await createCalendar(true);
     checkDateList(checkedListData);
     clearTimeout(loadData);
-  });
+  }, 50);
 }
 function changeHolidayYear() {
   const holidayYearSelect = document.getElementById("holidayYear");
@@ -176,8 +191,8 @@ function getComputedCalendarWidth() {
   const dateWidth = Math.floor(width / 7);
   return { width, dateWidth };
 }
-async function createCalendar(isChangeYear) {
-  // console.log('createCalendar')
+async function createCalendar(isChangeYear = false, isEffect = true) {
+  // console.log("TEST 1 createCalendar");
   const today = changedDate ? new Date(changedDate) : new Date();
   const currentYear = today.getFullYear();
   const currentMonth = today.getMonth() + 1;
@@ -314,6 +329,9 @@ async function createCalendar(isChangeYear) {
       document.getElementById(box.id).className += " c-box-active";
       todoDate.textContent = `${year}-${month}-${date}`;
       todo.style.display = "block";
+      // 휴무 체크박스
+      todoCheckedHoliday.checked =
+        !!eventDay.solarEvent[`${year}-${month}-${date}`];
       loadData(todoDate.textContent, box);
     });
 
@@ -346,19 +364,23 @@ async function createCalendar(isChangeYear) {
       date: `0${i + 1}`.slice(-2),
     });
   }
-  // 효과
-  const effectBox = document.querySelectorAll(".c-box");
-  effectBox.forEach((box) => {
-    box.style.animationDelay = `${Math.random() * 0.5}s`;
-    const rect = box.getBoundingClientRect();
-    box.style.top = `${rect.top}px`;
-    box.style.left = `${rect.left}px`;
-  });
 
-  effectBox.forEach((box) => {
-    box.className += " c-box-animation";
-  });
+  if (isEffect) {
+    // 효과
+    const effectBox = document.querySelectorAll(".c-box");
+    effectBox.forEach((box) => {
+      box.style.animationDelay = `${Math.random() * 0.5}s`;
+      const rect = box.getBoundingClientRect();
+      box.style.top = `${rect.top}px`;
+      box.style.left = `${rect.left}px`;
+    });
 
+    effectBox.forEach((box) => {
+      box.className += " c-box-animation";
+    });
+  }
+
+  calendarList.innerHTML = "";
   connectionDB("calendar", "selectAll", {});
 }
 
@@ -389,9 +411,10 @@ function saveTodo() {
   const date = todoDate.textContent;
   const msg = todoBoxMsg.value;
   const user = "test";
-  appendData({ date, user, msg });
   // console.log({ date, user, msg })
   connectionDB("calendar", "insert", { user, date, msg });
+  socket.emit("calendar refesh", { date, num: selectCountBadge(date) });
+  todoBoxMsg.value = "";
 }
 function appendData({ key, date, user, msg }) {
   const todoDiv = document.createElement("div");
@@ -401,6 +424,8 @@ function appendData({ key, date, user, msg }) {
   button.textContent = "X";
   button.addEventListener("click", () => {
     connectionDB("calendar", "delete", { key, date });
+    // console.log("삭제:", { key, date });
+    socket.emit("calendar refesh", { date, num: selectCountBadge(date) });
   });
   codeDiv.className = "code html";
   codeDiv.textContent = msg;
@@ -422,9 +447,32 @@ function countBadge(date, num) {
   if (badge) {
     const badgeCount = badge.textContent || "";
     // console.log({ badgeCount })
-    badge.textContent = Number(badgeCount) + num;
+    if ((num === -1 && badgeCount > 0) || num === 1)
+      badge.textContent = Number(badgeCount) + num;
     badge.textContent = badge.textContent === "0" ? "" : badge.textContent;
     badge.className = badge.textContent === "" ? "badge" : "badge badge-active";
+  }
+}
+function createListData({ date, msg }) {
+  const box = document.createElement("div");
+  box.className += " msg-list-box";
+  box.innerHTML = `<span class='msg-list-date'>${date}</span><div class='msg-list-msg'>${msg}</div>`;
+  calendarList.append(box);
+}
+function selectCountBadge(date) {
+  // console.log('countBadge')
+  const badge = document.getElementById(`badge-${date}`);
+  if (badge) {
+    const badgeCount = badge.textContent || "";
+    return badgeCount;
+  }
+  return 0;
+}
+function setCountBadge(date, num) {
+  // console.log('countBadge')
+  const badge = document.getElementById(`badge-${date}`);
+  if (badge) {
+    badge.textContent = num;
   }
 }
 function insertHoliday() {

@@ -49,6 +49,12 @@ const eventDay = {
   solarDynamic: {},
   holiday: {},
 };
+
+// 설정하기
+const cf = {
+  coffe: false, // 커피박스 보이기
+};
+
 const today = new Date();
 const year = today.getFullYear();
 const month = `0${today.getMonth() + 1}`.slice(-2);
@@ -60,6 +66,7 @@ let isCalc = true;
 const windowTheme = window.matchMedia("(perfers-color-scheme: dark)");
 const todo = document.getElementById("todo");
 const todoDate = document.getElementById("todo-date");
+const todoCheckedHoliday = document.getElementById("todo-checked-holiday");
 const todoBoxMsg = document.getElementById("todo-box-msg");
 const todoList = document.getElementById("todo-list");
 const calendarBox = document.getElementById("calendarBox");
@@ -70,3 +77,14 @@ const menuLogo = document.getElementById("menu-logo");
 const menuBox = document.getElementById("menu-box");
 const menuCard = document.getElementById("menu-card");
 const menus = document.querySelectorAll(".menu");
+
+// coffee-box
+const coffeeBox = document.getElementById("coffee-box");
+coffeeBox.style.display = cf.coffe ? "block" : "none";
+
+// calendarLayout
+const calendarLayout = document.getElementById("calendarLayout");
+const calendarList = document.getElementById("calendarList");
+
+// 달력 전환 버튼
+const convertCalendarList = document.getElementById("convert-calendar-list");
