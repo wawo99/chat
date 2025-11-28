@@ -13,6 +13,7 @@ socket.on("checked date list", (checkedList) => {
   // console.log("checked date list", { checkedList });
   checkedListData = checkedList;
   getHolidayData();
+  getWorkTimeData();
 });
 
 socket.on("calendarRefesh", ({ date, num }) => {

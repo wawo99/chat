@@ -12,6 +12,7 @@
         <li data-target="menu1">휴가</li>
         <li data-target="menu2">백업</li>
         <li data-target="menu3">복구</li>
+        <li data-target="menu4">근무시간</li>
       </ul>
       <div id="menu-content">
         <div id="menu1" class="menu">
@@ -47,6 +48,18 @@
             데이터복원
           </button>
         </div>
+        <div id="menu4" class="menu">
+          <div class="sub-title mb5">
+            <span>근무시간 리스트</span>
+            <span
+              ><input
+                type="month"
+                id="workMonth"
+                onchange="getWorkTimeData(`${this.value}-00`)"
+            /></span>
+          </div>
+          <div id="workTimeList"></div>
+        </div>
       </div>
     </div>
     <div id="coffee-box">
@@ -66,6 +79,18 @@
       <div id="calendarLayout">
         <div id="calendarInfo"></div>
         <div id="calendarBox"></div>
+        <div id="workTime" class="work-time-box">
+          <input type="time" value="08:20" id="workStartTime" />
+          <input type="time" value="18:00" id="workEndTime" />
+          <button
+            type="button"
+            data-date=""
+            id="workTimeBtn"
+            onclick="setWorkTime()"
+          >
+            출퇴근시간설정
+          </button>
+        </div>
       </div>
       <div class="calendar-list-box-mask"></div>
       <div id="calendarList" class="calendar-list-box"></div>

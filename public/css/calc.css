@@ -274,3 +274,28 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #313131;
 }
+
+.today {
+  background-color: rgba(166, 0, 255, 0.159);
+}
+.today span {
+  color: rgb(172, 75, 227);
+}
+.list-today {
+  color: rgb(202, 227, 75);
+}
+.work-time-box {
+  margin-top: 10px;
+  text-align: right;
+}
+
+.work-time-box input {
+  border: 1px solid #801dea;
+  outline: none;
+  color: #16c7f3;
+  background-color: rgb(105, 28, 146);
+}
+
+.saved-work-time {
+  color: yellow !important;
+}

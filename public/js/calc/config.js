@@ -55,6 +55,9 @@ const cf = {
   coffe: false, // 커피박스 보이기
 };
 
+// 출퇴근PK
+const workTime = {};
+
 const today = new Date();
 const year = today.getFullYear();
 const month = `0${today.getMonth() + 1}`.slice(-2);
@@ -88,3 +91,10 @@ const calendarList = document.getElementById("calendarList");
 
 // 달력 전환 버튼
 const convertCalendarList = document.getElementById("convert-calendar-list");
+
+// 근무시간 리스트
+const workTimeList = document.getElementById("workTimeList");
+const workStartTime = document.getElementById("workStartTime");
+const workEndTime = document.getElementById("workEndTime");
+const workTimeBtn = document.getElementById("workTimeBtn");
+const workMonth = document.getElementById("workMonth");

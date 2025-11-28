@@ -1,7 +1,9 @@
+// 달력 일정 가져오는 api
 async function getDateApi(year) {
   const url = `https://cdn.jsdelivr.net/gh/distbe/holidays@gh-pages/${year}.json`;
 
   eventDay.holiday = {};
+
   await fetch(url)
     .then(async (res) => {
       const data = await res.json();
@@ -38,27 +40,60 @@ function updateHoliday() {
 // 휴가 설정 데이터 가져오기
 function getHolidayData() {
   connectionDB("holiday", "selectHolidayAll", {});
+
   const loadData = setTimeout(async () => {
     await createCalendar(true);
     checkDateList(checkedListData);
     clearTimeout(loadData);
   }, 50);
 }
+
+// 근무시간 데이터 가져오기
+function getWorkTimeData(date = getTodayDate()) {
+  connectionDB("work", "selectWorkTimeList", { date });
+  workMonth.value = date.substring(0, 7);
+}
+
+// 근무시간 리스트 생성
+function createWorkTimeList(workTimeData) {
+  workTimeList.innerHTML = "";
+
+  workTimeData.forEach((v) => {
+    const workTimeItem = document.createElement("div");
+    const workTimeItemBtn = document.createElement("button");
+
+    workTimeItem.textContent = `${v.date} : ${v.startTime} ~ ${v.endTime}`;
+    workTimeItemBtn.textContent = "X";
+    workTimeItemBtn.addEventListener("click", () => {
+      connectionDB("work", "deleteWorkTime", { key: v.pk, date: v.date });
+    });
+
+    workTimeItem.appendChild(workTimeItemBtn);
+    workTimeList.appendChild(workTimeItem);
+  });
+}
+
+// 휴가 연도 변경
 function changeHolidayYear() {
   const holidayYearSelect = document.getElementById("holidayYear");
   const year = holidayYearSelect.value;
+
   holidayList(year);
 }
 
+// 휴가 리스트 출력
 function holidayList(year = `${new Date().getFullYear()}`) {
   const holidayList = document.getElementById("holidayList");
   const holidayListCount = document.getElementById("holidayListCount");
   const holidayYear = document.getElementById("holidayYear");
+
   holidayList.innerHTML = "";
   holidayListCount.innerHTML = "";
   holidayYear.innerHTML = "<option value='all'>전체</option>";
+
   const holidayYears = {};
   let holidayCount = 0;
+
   Object.entries(eventDay.solarEvent).map((k, v) => {
     // console.log(k, v, k[0].slice(0, 4));
     const holidayYearKey = k[0].slice(0, 4);
@@ -78,6 +113,7 @@ function holidayList(year = `${new Date().getFullYear()}`) {
     holidayList.appendChild(holidayItem);
     holidayCount++;
   });
+
   Object.keys(holidayYears).forEach((y) => {
     const option = document.createElement("option");
     option.value = y;
@@ -85,9 +121,11 @@ function holidayList(year = `${new Date().getFullYear()}`) {
     option.selected = year === y;
     holidayYear.appendChild(option);
   });
+
   holidayListCount.textContent = `(${holidayCount})`;
 }
 
+// 테마 토글
 function toggleTheme(init = false) {
   const body = document.getElementsByTagName("body")[0];
   const theme = body.id;
@@ -105,6 +143,8 @@ function toggleTheme(init = false) {
   localStorage.setItem("theme", body.id);
   // socket.emit('checked date list')
 }
+
+// 상단 바 날짜 변경
 function changeTopBarDate() {
   const selectDay = changedDate ? new Date(changedDate) : new Date();
   const year = selectDay.getFullYear();
@@ -114,6 +154,8 @@ function changeTopBarDate() {
     "calendarInfo"
   ).innerHTML = `<span class='btn' onclick='preMonth()'>이전</span><span>${year}년 ${month}월</span><span class='btn' onclick='nextMonth()'>다음</span>`;
 }
+
+// 결제자 체크리스트 출력
 function checkDateList(checkedList) {
   const realName = {
     W: "우현",
@@ -134,14 +176,19 @@ function checkDateList(checkedList) {
   const futureBuyerName = opponentName[lastBuyerName];
   const isBuy = lastCheckedObject?.date === convertedToday;
   const selectBox = document.getElementById("selectBox");
+
   selectBox.innerHTML = "";
+
   Object.keys(realName).forEach((v) => {
     const option = document.createElement("option");
+
     option.value = v;
     option.id = v;
     option.textContent = realName[v];
+
     selectBox.append(option);
   });
+
   function getMessage() {
     let message;
     const nameToBuy = isBuy
@@ -161,22 +208,32 @@ function checkDateList(checkedList) {
   orderbyCheckedList.forEach((v, i) => {
     const dateElement = document.createElement("div");
     const selectDate = document.getElementById(`c-${v.date}`);
+
     dateElement.className = `${realName[v.name]} content`;
+
     let deleteButton = "";
+
     if (isBuy && orderbyCheckedList.length - 1 === i) {
       deleteButton = `<button type='button' class='remove' onclick='remove("${v.date}")'>X</button>`;
     }
+
     dateElement.innerHTML = `<span>${realName[v.name]}${deleteButton}</span>`;
+
     if (selectDate) selectDate.append(dateElement);
   });
 
   if (futureBuyerName)
     document.getElementById(futureBuyerName ?? "").selected = true;
+
   document.getElementById("whosCoffee").textContent = getMessage();
 }
+
+// 체크리스트 삭제
 function remove(date) {
   socket.emit("checked remove date", { date });
 }
+
+// 체크리스트 등록
 function submit() {
   const selectBox = document.getElementById("selectBox");
   // console.log({ convertedToday })
@@ -185,12 +242,16 @@ function submit() {
     name: selectBox.value,
   });
 }
+
+// 달력 너비 계산
 function getComputedCalendarWidth() {
   const body = getComputedStyle(calendarBox);
   const width = Number(body.width.replace("px", ""));
   const dateWidth = Math.floor(width / 7);
   return { width, dateWidth };
 }
+
+// 달력 생성
 async function createCalendar(isChangeYear = false, isEffect = true) {
   // console.log("TEST 1 createCalendar");
   const today = changedDate ? new Date(changedDate) : new Date();
@@ -206,7 +267,7 @@ async function createCalendar(isChangeYear = false, isEffect = true) {
   const totalCellNumber = currentTotalDay + preRemainDay;
 
   const nextRemainNumber = Math.ceil(totalCellNumber / 7) * 7 - totalCellNumber;
-  const { width, dateWidth } = getComputedCalendarWidth();
+  const { dateWidth } = getComputedCalendarWidth();
 
   isChangeYear && (await getDateApi(currentYear));
 
@@ -225,22 +286,29 @@ async function createCalendar(isChangeYear = false, isEffect = true) {
         currentDate.getMonth() + 1,
         currentDate.getDate()
       );
+
       const gapja = calendarForBock.getKoreanGapja();
+
       // console.log({ gapja })
       if (gapja.day.includes("경")) {
         const gengDayMonthKey = `0${currentDate.getMonth() + 1}`.slice(-2);
         const gengDayDateKey = `0${currentDate.getDate()}`.slice(-2);
+
         gengDays.push({
           gapja: gapja.day,
           day: `${gengDayMonthKey}${gengDayDateKey}`,
         });
+
         const gngLen = gengDays.length;
+
         bockTypeNum.includes(gngLen) &&
           (solarDynamic[`${gengDayMonthKey}${gengDayDateKey}`] =
             bockType[gngLen]);
       }
+
       currentDate.setDate(currentDate.getDate() + 1);
     }
+
     return solarDynamic;
   }
 
@@ -261,13 +329,21 @@ async function createCalendar(isChangeYear = false, isEffect = true) {
       0: " sunday",
       6: " saturday",
     };
+
     const box = document.createElement("div");
+
     box.style.width = `${dateWidth}px`;
     box.style.height = `${dateWidth}px`;
     box.className = className;
     box.className += " c-box";
+    box.className +=
+      Number(month) === new Date().getMonth() + 1 &&
+      Number(date) === new Date().getDate()
+        ? " today"
+        : "";
     box.className += weekOfDayObject[weekOfDay] ? " holiday" : "";
     box.id = `c-${year}-${month}-${date}`;
+
     const getDateTemplate = (dateData, className, originElement = "") => {
       const isString = typeof dateData === "string";
       const element = isString
@@ -298,6 +374,7 @@ async function createCalendar(isChangeYear = false, isEffect = true) {
       eventDay.solarEvent[solarFullDateKey],
       "event-date"
     );
+
     if (isCalc) {
       const termElement = getDateTemplate(
         eventDay.solarTerm[solarDateKey] || eventDay.solarDynamic[solarDateKey],
@@ -307,7 +384,9 @@ async function createCalendar(isChangeYear = false, isEffect = true) {
         eventDay.solar[solarDateKey] || eventDay.lunar[lunarDateKey],
         "holi-date"
       );
-      box.innerHTML = `<span class='date'><span class='${weekOfDayObject[weekOfDay]}'>${date}</span>${lunarDateElement}${holidayElement}${eventDayElement}${termElement}</span>`;
+      box.innerHTML = `<span class='date'><span class='${
+        weekOfDayObject[weekOfDay] ?? ""
+      }'>${date}</span>${lunarDateElement}${holidayElement}${eventDayElement}${termElement}</span>`;
     } else {
       const holidayObjOriginElement = getDateTemplate(
         eventDay.holiday[solarDateKey] || eventDay.solarDynamic[solarDateKey],
@@ -318,21 +397,35 @@ async function createCalendar(isChangeYear = false, isEffect = true) {
         "holi-date",
         holidayObjOriginElement
       );
-      box.innerHTML = `<span class='date'><span class='${weekOfDayObject[weekOfDay]}'>${date}</span>${lunarDateElement}${eventDayElement}</span><div>${holidayObjElement}</div>`;
+      box.innerHTML = `<span class='date'><span class='${
+        weekOfDayObject[weekOfDay] ?? ""
+      }'>${date}</span>${lunarDateElement}${eventDayElement}</span><div>${holidayObjElement}</div>`;
     }
-    box.innerHTML += `<div class='badge' id='badge-${year}-${month}-${date}'></div>`;
+
+    box.innerHTML += `<div class='badge' id='badge-${solarFullDateKey}'></div>`;
+
     box.addEventListener("click", () => {
       const cBox = calendarBox.getElementsByClassName("c-box");
+
       for (v of cBox) {
         v.className = v.className.replace("c-box-active", "");
       }
+
       document.getElementById(box.id).className += " c-box-active";
-      todoDate.textContent = `${year}-${month}-${date}`;
+
+      todoDate.textContent = `${solarFullDateKey}`;
       todo.style.display = "block";
+
       // 휴무 체크박스
-      todoCheckedHoliday.checked =
-        !!eventDay.solarEvent[`${year}-${month}-${date}`];
+      todoCheckedHoliday.checked = !!eventDay.solarEvent[`${solarFullDateKey}`];
       loadData(todoDate.textContent, box);
+
+      // 출퇴근시간 로드
+      connectionDB("work", "selectWorkTime", {
+        date: solarFullDateKey,
+      });
+      const workTimeBtn = document.getElementById("workTimeBtn");
+      workTimeBtn.dataset.date = solarFullDateKey;
     });
 
     calendarBox.append(box);
@@ -349,7 +442,9 @@ async function createCalendar(isChangeYear = false, isEffect = true) {
   }
   for (let i = 0; i < currentTotalDay; i++) {
     calendar.setSolarDate(currentYear, currentMonth, i + 1);
+
     const lunarDate = calendar.getLunarCalendar();
+
     createCell("box", {
       year: currentYear,
       month: `0${currentMonth}`.slice(-2),
@@ -368,6 +463,7 @@ async function createCalendar(isChangeYear = false, isEffect = true) {
   if (isEffect) {
     // 효과
     const effectBox = document.querySelectorAll(".c-box");
+
     effectBox.forEach((box) => {
       box.style.animationDelay = `${Math.random() * 0.5}s`;
       const rect = box.getBoundingClientRect();
@@ -381,108 +477,193 @@ async function createCalendar(isChangeYear = false, isEffect = true) {
   }
 
   calendarList.innerHTML = "";
+
   connectionDB("calendar", "selectAll", {});
 }
 
+// 달력 날짜 변경
 function changeDate(n) {
   const dateInfo = changedDate?.split("-") || convertedToday.split("-");
-  const month = dateInfo[1];
+  // const month = dateInfo[1];
   const checkedDate = new Date(dateInfo[0], Number(dateInfo[1]) - 1 + n);
+
   changedDate = `${checkedDate.getFullYear()}-${`0${
     checkedDate.getMonth() + 1
   }`.slice(-2)}`;
+
   changeTopBarDate();
+
   return Number(dateInfo[0]) !== checkedDate.getFullYear();
 }
+
+// 이전 달
 async function preMonth() {
   await createCalendar(changeDate(-1));
   checkDateList(checkedListData);
   closeTodo();
 }
+
+// 다음 달
 async function nextMonth() {
   await createCalendar(changeDate(1));
   checkDateList(checkedListData);
   closeTodo();
 }
+
+// 할일창 닫기
 function closeTodo() {
   todo.style.display = "none";
 }
+
+// 할일 저장
 function saveTodo() {
   const date = todoDate.textContent;
   const msg = todoBoxMsg.value;
   const user = "test";
+
   // console.log({ date, user, msg })
   connectionDB("calendar", "insert", { user, date, msg });
+
   socket.emit("calendar refesh", { date, num: selectCountBadge(date) });
+
   todoBoxMsg.value = "";
 }
+
+// 할일 데이터 추가
 function appendData({ key, date, user, msg }) {
   const todoDiv = document.createElement("div");
   const contents = document.createElement("pre");
   const codeDiv = document.createElement("code");
   const button = document.createElement("button");
+
   button.textContent = "X";
+
   button.addEventListener("click", () => {
     connectionDB("calendar", "delete", { key, date });
     // console.log("삭제:", { key, date });
     socket.emit("calendar refesh", { date, num: selectCountBadge(date) });
   });
+
   codeDiv.className = "code html";
   codeDiv.textContent = msg;
+
   hljs.highlightElement(codeDiv);
+
   contents.appendChild(codeDiv);
   contents.style.marginLeft = "10px";
+
   todoDiv.style.display = "flex";
   todoDiv.appendChild(contents);
+
   if (key) todoDiv.prepend(button);
+
   todoList.prepend(todoDiv);
 }
+
+// 할일 데이터 불러오기
 function loadData(date) {
   todoList.innerHTML = "";
   connectionDB("calendar", "select", { date });
 }
+
+// 배지 카운트 변경
 function countBadge(date, num) {
   // console.log('countBadge')
   const badge = document.getElementById(`badge-${date}`);
+
   if (badge) {
     const badgeCount = badge.textContent || "";
+
     // console.log({ badgeCount })
     if ((num === -1 && badgeCount > 0) || num === 1)
       badge.textContent = Number(badgeCount) + num;
+
     badge.textContent = badge.textContent === "0" ? "" : badge.textContent;
     badge.className = badge.textContent === "" ? "badge" : "badge badge-active";
   }
 }
+
+// 할일 리스트 전체 일자 데이터 생성
 function createListData({ date, msg }) {
   const box = document.createElement("div");
+
+  // 오늘 날짜 클래스 추가
+  const todayClass = date === getTodayDate() ? " list-today" : "";
+
   box.className += " msg-list-box";
-  box.innerHTML = `<span class='msg-list-date'>${date}</span><div class='msg-list-msg'>${msg}</div>`;
+  box.innerHTML = `<span class='msg-list-date ${todayClass}'>${date}</span><div class='msg-list-msg'>${msg}</div>`;
+
   calendarList.append(box);
 }
+
+// 배지 카운트 선택
 function selectCountBadge(date) {
   // console.log('countBadge')
   const badge = document.getElementById(`badge-${date}`);
+
   if (badge) {
     const badgeCount = badge.textContent || "";
     return badgeCount;
   }
+
   return 0;
 }
+
+// 배지 카운트 설정
 function setCountBadge(date, num) {
   // console.log('countBadge')
   const badge = document.getElementById(`badge-${date}`);
+
   if (badge) {
     badge.textContent = num;
   }
 }
+
+// 휴일 추가
 function insertHoliday() {
   const holidayDateInput = document.getElementById("holidayDate");
   const holidayNameInput = document.getElementById("holidayName");
   const holidayDate = holidayDateInput.value;
   const holidayName = holidayNameInput.value;
+
   if (!holidayDate) return;
+
   connectionDB("holiday", "insertHoliday", {
     date: holidayDate,
     name: holidayName,
   });
+}
+
+// 오늘 날짜
+function getTodayDate() {
+  const today = new Date();
+  const Y = today.getFullYear();
+  const M = `0${today.getMonth() + 1}`.slice(-2);
+  const D = `0${today.getDate()}`.slice(-2);
+  return `${Y}-${M}-${D}`;
+}
+
+// 출퇴근 시간 설정 저장
+function setWorkTime() {
+  const workDate = workTimeBtn.dataset.date || getTodayDate();
+
+  connectionDB("work", "insertWorkTime", {
+    startTime: workStartTime.value,
+    endTime: workEndTime.value,
+    date: workDate,
+  });
+}
+
+// 선택된 출퇴근 시간 설정
+function setSelectedWorkTime(startTime, endTime, isSavedWorkTime) {
+  workStartTime.value = startTime;
+  workEndTime.value = endTime;
+
+  if (isSavedWorkTime) {
+    workStartTime.classList.add("saved-work-time");
+    workEndTime.classList.add("saved-work-time");
+  } else {
+    workStartTime.classList.remove("saved-work-time");
+    workEndTime.classList.remove("saved-work-time");
+  }
 }
