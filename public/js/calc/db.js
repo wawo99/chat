@@ -79,12 +79,13 @@ function crudData(storeName, type, calendarData) {
           // .onsuccess = () => {};
         } else {
           console.log("insert");
-          dataStore.add({ pk: Date.now(), ...calendarData });
-          // .onsuccess = async (
-          //   res
-          // ) => {
-          //    const cursorData = res.target.result;
-          // };
+          dataStore.add({ pk: Date.now(), ...calendarData }).onsuccess = () => {
+            setSelectedWorkTime(
+              calendarData.startTime,
+              calendarData.endTime,
+              true
+            );
+          };
         }
       };
     },
@@ -136,7 +137,10 @@ function crudData(storeName, type, calendarData) {
       const request = index.getAll(range);
 
       request.onsuccess = () => {
-        console.log("11월 데이터:", request.result);
+        request.result.forEach((v) => {
+          workTime[v.date] = true;
+        });
+        console.log("월 데이터:", workTime);
         createWorkTimeList(request.result);
       };
     },

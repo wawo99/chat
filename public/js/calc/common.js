@@ -49,8 +49,11 @@ function getHolidayData() {
 }
 
 // 근무시간 데이터 가져오기
-function getWorkTimeData(date = getTodayDate()) {
+function getWorkTimeData(date = getTodayDate(), onlyToday = false) {
   connectionDB("work", "selectWorkTimeList", { date });
+  connectionDB("work", "selectWorkTime", {
+    date: onlyToday ? getTodayDate() : date,
+  });
   workMonth.value = date.substring(0, 7);
 }
 
@@ -389,24 +392,36 @@ async function createCalendar(isChangeYear = false, isEffect = true) {
         weekOfDayObject[weekOfDay] ?? ""
       }'>${date}</span>${lunarDateElement}${holidayElement}${eventDayElement}${termElement}</span>`;
     } else {
-      // 여기에서 실질적인 공휴일 및 이벤트 날을 설정한다.
+      /* 여기에서 실질적인 공휴일 및 이벤트 날을 설정한다.*/
+
+      // 휴일 표시
       const holidayObjOriginElement = getDateTemplate(
         eventDay.holiday[solarDateKey] || eventDay.solarDynamic[solarDateKey],
         "term-date"
       );
+
+      // 음력 이벤트 표시
       const holidayObjElement = getDateTemplate(
         eventDay.lunar[lunarDateKey],
         "holi-date",
         holidayObjOriginElement
       );
+
+      // 생일자 표시
       const birthdayObjElement = getDateTemplate(
         eventDay.birthday[solarDateKey],
         "holi-date",
         holidayObjElement
       );
-      box.innerHTML = `<span class='date'><span class='${
+
+      // 근무시간 입력 유무 아이콘 표시
+      const tryangleIcon = workTime[solarFullDateKey]
+        ? "<div class='tryangle-icon'></div>"
+        : "";
+
+      box.innerHTML = `<div class='date'><span class='${
         weekOfDayObject[weekOfDay] ?? ""
-      }'>${date}</span>${lunarDateElement}${eventDayElement}</span><div>${birthdayObjElement}</div>`;
+      }'>${date}</span>${lunarDateElement}${eventDayElement}${tryangleIcon}</div><div>${birthdayObjElement}</div>`;
     }
 
     box.innerHTML += `<div class='badge' id='badge-${solarFullDateKey}'></div>`;
@@ -431,7 +446,6 @@ async function createCalendar(isChangeYear = false, isEffect = true) {
       connectionDB("work", "selectWorkTime", {
         date: solarFullDateKey,
       });
-      const workTimeBtn = document.getElementById("workTimeBtn");
       workTimeBtn.dataset.date = solarFullDateKey;
     });
 
@@ -504,17 +518,25 @@ function changeDate(n) {
 }
 
 // 이전 달
-async function preMonth() {
-  await createCalendar(changeDate(-1));
-  checkDateList(checkedListData);
-  closeTodo();
+function preMonth() {
+  const chd = changeDate(-1);
+  getWorkTimeData(`${changedDate}-00`, true);
+  setTimeout(async () => {
+    await createCalendar(chd);
+    checkDateList(checkedListData);
+    closeTodo();
+  }, 100);
 }
 
 // 다음 달
-async function nextMonth() {
-  await createCalendar(changeDate(1));
-  checkDateList(checkedListData);
-  closeTodo();
+function nextMonth() {
+  const chd = changeDate(1);
+  getWorkTimeData(`${changedDate}-00`, true);
+  setTimeout(async () => {
+    await createCalendar(chd);
+    checkDateList(checkedListData);
+    closeTodo();
+  }, 100);
 }
 
 // 할일창 닫기

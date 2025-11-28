@@ -299,3 +299,17 @@ body {
 .saved-work-time {
   color: yellow !important;
 }
+
+.tryangle-icon {
+  position: absolute;
+  top: 2;
+  right: 2;
+  border-right: 6px solid rgb(138, 2, 192);
+  border-bottom: 6px solid transparent;
+}
+
+.date {
+  text-align: left;
+  width: 100%;
+  position: relative;
+}
