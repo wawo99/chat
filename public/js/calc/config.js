@@ -3,11 +3,13 @@ const calendar = new KoreanLunarCalendar();
 const calendarForBock = new KoreanLunarCalendar();
 const eventDay = {
   lunar: {
+    1229: "설날",
     1230: "설날",
     "0101": "설날",
     "0102": "설날",
     "0814": "추석",
     "0815": "추석",
+    "0816": "추석",
     "0719": "(엄)생일",
     "0805": "(장)생일",
   },
@@ -48,6 +50,14 @@ const eventDay = {
   },
   solarDynamic: {},
   holiday: {},
+  birthday: {
+    "0214": "한수민 생일",
+    "0403": "한솔지 생일",
+    "0416": "한강민 생일",
+    "0418": "유지은 생일",
+    "0909": "MY 생일",
+    1122: "(아)생일",
+  },
 };
 
 // 설정하기

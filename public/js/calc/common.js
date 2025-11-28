@@ -376,6 +376,7 @@ async function createCalendar(isChangeYear = false, isEffect = true) {
     );
 
     if (isCalc) {
+      // 이 부분은 혹시라도 공휴일 가져오는 api가 에러일때 또는 접속불가일때 공휴일 이벤트 일정 표시한다.
       const termElement = getDateTemplate(
         eventDay.solarTerm[solarDateKey] || eventDay.solarDynamic[solarDateKey],
         "term-date"
@@ -388,6 +389,7 @@ async function createCalendar(isChangeYear = false, isEffect = true) {
         weekOfDayObject[weekOfDay] ?? ""
       }'>${date}</span>${lunarDateElement}${holidayElement}${eventDayElement}${termElement}</span>`;
     } else {
+      // 여기에서 실질적인 공휴일 및 이벤트 날을 설정한다.
       const holidayObjOriginElement = getDateTemplate(
         eventDay.holiday[solarDateKey] || eventDay.solarDynamic[solarDateKey],
         "term-date"
@@ -397,9 +399,14 @@ async function createCalendar(isChangeYear = false, isEffect = true) {
         "holi-date",
         holidayObjOriginElement
       );
+      const birthdayObjElement = getDateTemplate(
+        eventDay.birthday[solarDateKey],
+        "holi-date",
+        holidayObjElement
+      );
       box.innerHTML = `<span class='date'><span class='${
         weekOfDayObject[weekOfDay] ?? ""
-      }'>${date}</span>${lunarDateElement}${eventDayElement}</span><div>${holidayObjElement}</div>`;
+      }'>${date}</span>${lunarDateElement}${eventDayElement}</span><div>${birthdayObjElement}</div>`;
     }
 
     box.innerHTML += `<div class='badge' id='badge-${solarFullDateKey}'></div>`;
