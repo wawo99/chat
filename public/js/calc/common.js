@@ -378,6 +378,17 @@ async function createCalendar(isChangeYear = false, isEffect = true) {
       "event-date"
     );
 
+    // 이벤트♡ 표시
+    let eventLoveDayElement = "";
+    if (eventDateList[solarFullDateKey]) {
+      Object.values(eventDateList[solarFullDateKey]).forEach((v) => {
+        eventLoveDayElement += getDateTemplate(
+          v.elementHtml,
+          `event-love-date ${v.className}`
+        );
+      });
+    }
+
     if (isCalc) {
       // 이 부분은 혹시라도 공휴일 가져오는 api가 에러일때 또는 접속불가일때 공휴일 이벤트 일정 표시한다.
       const termElement = getDateTemplate(
@@ -421,7 +432,7 @@ async function createCalendar(isChangeYear = false, isEffect = true) {
 
       box.innerHTML = `<div class='date'><span class='${
         weekOfDayObject[weekOfDay] ?? ""
-      }'>${date}</span>${lunarDateElement}${eventDayElement}${tryangleIcon}</div><div>${birthdayObjElement}</div>`;
+      }'>${date}</span>${lunarDateElement}${eventDayElement}${tryangleIcon}</div><div>${birthdayObjElement}</div><div>${eventLoveDayElement}</div>`;
     }
 
     box.innerHTML += `<div class='badge' id='badge-${solarFullDateKey}'></div>`;
@@ -695,4 +706,116 @@ function setSelectedWorkTime(startTime, endTime, isSavedWorkTime) {
     workStartTime.classList.remove("saved-work-time");
     workEndTime.classList.remove("saved-work-time");
   }
+}
+
+// 이벤트 가져오기
+function getSelectEvent() {
+  // selectEvent
+  // console.log("select event");
+  connectionDB("calendar", "selectEvent", {});
+}
+
+// 이벤트 리스트 생성
+const eventAllList = {};
+const eventDateList = {};
+let eventTotalMoney = 0;
+function createEventList(dataList) {
+  // 전체 이벤트 소팅 및 금액 배열
+  dataList.forEach((v) => {
+    // 전체 Event 리스트 OBJECT 생성
+    const event = v.msg.match(/[\uAC00-\uD7A3]+/g)[0];
+    const money = v.msg.match(/[0-9]+/g)[0];
+    !eventAllList[event] && (eventAllList[event] = []);
+    eventAllList[event].push({ date: v.date, event, money });
+
+    // total 금액
+    eventTotalMoney += money * 1;
+
+    // 이벤트 표시 위한 리스트 생성
+    !eventDateList[v.date] && (eventDateList[v.date] = []);
+    eventDateList[v.date].push({
+      elementHtml: `<span>♥</span>`,
+      className: event,
+    });
+  });
+
+  // 날짜 정렬
+  Object.values(eventAllList).forEach((v) => {
+    v.sort((a, b) => {
+      return new Date(a.date) - new Date(b.date);
+    });
+  });
+
+  // 이벤트 셀렉트 박스 생성
+  eventSelect.innerHTML = "";
+  const optionAll = document.createElement("option");
+  optionAll.value = "all";
+  optionAll.textContent = "전체";
+  eventSelect.append(optionAll);
+
+  Object.keys(eventAllList).forEach((v) => {
+    const option = document.createElement("option");
+
+    option.value = v;
+    option.id = v;
+    option.textContent = `${v} (${eventAllList[v].length})`;
+    // console.log(option);
+    eventSelect.append(option);
+  });
+
+  eventTotal.textContent = eventTotalMoney;
+
+  changeEventSelect("all");
+}
+
+// 이벤트 지역 날짜 범위 변경 (날짜 정렬)
+function changeEventSelect() {
+  const selected = eventSelect.value;
+  eventList.innerHTML = "";
+
+  let listAll = [];
+  let total = 0;
+
+  Object.values(eventAllList).forEach((v) => {
+    listAll = [...listAll, ...v];
+  });
+
+  // 정렬
+  listAll.sort((a, b) => {
+    return new Date(a.date) - new Date(b.date);
+  });
+
+  const L = selected === "all" ? listAll : eventAllList[selected];
+
+  boundryEventDate(L).forEach((v) => {
+    const item = document.createElement("div");
+    item.textContent = `${v.date} : ${v.event} (${v.money})`;
+    eventList.appendChild(item);
+
+    total += v.money * 1;
+  });
+
+  // console.log({ list, total });
+
+  eventTotal.textContent = total;
+}
+
+// 이벤트 날짜 범위 필터
+function boundryEventDate(list) {
+  const startDate = eventStartDate.value;
+  const endDate = eventEndDate.value;
+  let filterList = list;
+
+  if (startDate && endDate && startDate < endDate) {
+    filterList = list.filter((v) => startDate <= v.date && endDate >= v.date);
+  }
+
+  eventCount.textContent = `(${filterList.length})`;
+
+  return filterList;
+}
+
+// 이벤트 형태 텍스트 적용하기
+function updateEventDay() {
+  todoBoxMsg.value = todoCheckedEventday.checked ? "[#] 이브 6" : "";
 }

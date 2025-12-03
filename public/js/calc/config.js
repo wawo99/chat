@@ -108,3 +108,12 @@ const workStartTime = document.getElementById("workStartTime");
 const workEndTime = document.getElementById("workEndTime");
 const workTimeBtn = document.getElementById("workTimeBtn");
 const workMonth = document.getElementById("workMonth");
+
+// 이벤트 리스트
+const eventList = document.getElementById("eventList");
+const eventCount = document.getElementById("eventCount");
+const eventTotal = document.getElementById("eventTotal");
+const eventSelect = document.getElementById("eventSelect");
+const eventStartDate = document.getElementById("eventStartDate");
+const eventEndDate = document.getElementById("eventEndDate");
+const todoCheckedEventday = document.getElementById("todo-checked-eventday");

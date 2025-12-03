@@ -14,6 +14,7 @@ socket.on("checked date list", (checkedList) => {
   checkedListData = checkedList;
   getHolidayData();
   getWorkTimeData();
+  getSelectEvent();
 });
 
 socket.on("calendarRefesh", ({ date, num }) => {

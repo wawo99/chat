@@ -166,6 +166,22 @@ function crudData(storeName, type, calendarData) {
       };
     },
 
+    // 이벤트 가져오기
+    selectEvent: function () {
+      const index = dataStore.index("msg");
+      const range = IDBKeyRange.bound("[#]", "[#]\uffff");
+      const request = index.getAll(range);
+
+      dataStore.index("date").openCursor(null, "prev");
+
+      // const request = dataStore.openCursor(range);
+      request.onsuccess = (_res) => {
+        const cursor = request.result;
+        console.log("Event", cursor);
+        createEventList(cursor);
+      };
+    },
+
     select: function () {
       const index = dataStore.index("date");
 
@@ -202,14 +218,22 @@ function crudData(storeName, type, calendarData) {
       };
     },
     deleteHoliday: function () {
-      const request = dataStore.delete(
-        eventDay.solarEventKey[calendarData.date]
-      );
-      request.onsuccess = async (res) => {
-        delete eventDay.solarEvent[calendarData.date];
-        holidayList();
-        await createCalendar();
-        checkDateList(checkedListData);
+      const index = dataStore.index("date");
+
+      // ① 날짜(date) 인덱스로 검색
+      const request = index.openCursor(IDBKeyRange.only(calendarData.date));
+
+      request.onsuccess = () => {
+        const cursor = request.result;
+
+        if (cursor) {
+          dataStore.delete(cursor.primaryKey).onsuccess = async (res) => {
+            delete eventDay.solarEvent[calendarData.date];
+            holidayList();
+            await createCalendar();
+            checkDateList(checkedListData);
+          };
+        }
       };
     },
     deleteWorkTime: function () {
