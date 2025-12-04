@@ -38,14 +38,10 @@ async function updateHoliday() {
 }
 
 // 휴가 설정 데이터 가져오기
-function getHolidayData() {
-  connectionDB("holiday", "selectHolidayAll", {});
-
-  const loadData = setTimeout(async () => {
-    await createCalendar(true);
-    checkDateList(checkedListData);
-    clearTimeout(loadData);
-  }, 50);
+async function getHolidayData() {
+  await connectionDB("holiday", "selectHolidayAll", {});
+  await createCalendar(true);
+  checkDateList(checkedListData);
 }
 
 // 근무시간 데이터 가져오기
@@ -529,25 +525,21 @@ function changeDate(n) {
 }
 
 // 이전 달
-function preMonth() {
+async function preMonth() {
   const chd = changeDate(-1);
-  getWorkTimeData(`${changedDate}-00`, true);
-  setTimeout(async () => {
-    await createCalendar(chd);
-    checkDateList(checkedListData);
-    closeTodo();
-  }, 100);
+  await getWorkTimeData(`${changedDate}-00`, true);
+  await createCalendar(chd);
+  checkDateList(checkedListData);
+  closeTodo();
 }
 
 // 다음 달
-function nextMonth() {
+async function nextMonth() {
   const chd = changeDate(1);
-  getWorkTimeData(`${changedDate}-00`, true);
-  setTimeout(async () => {
-    await createCalendar(chd);
-    checkDateList(checkedListData);
-    closeTodo();
-  }, 100);
+  await getWorkTimeData(`${changedDate}-00`, true);
+  await createCalendar(chd);
+  checkDateList(checkedListData);
+  closeTodo();
 }
 
 // 할일창 닫기
