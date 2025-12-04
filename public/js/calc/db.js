@@ -1,260 +1,276 @@
-function connectionDB(storeName, type, calendarData = {}) {
-  const indexdDB = window.indexedDB;
-  if (!indexdDB) {
-    alert("do not support");
-    return false;
-  }
-  const request = indexdDB.open("calendarDB", 3);
+/* ===============================
+✅ 1️⃣ DB OPEN (동기식)
+================================ */
+function openDB() {
+  return new Promise((resolve, reject) => {
+    const indexedDB = window.indexedDB;
+    if (!indexedDB) return reject("IndexedDB not supported");
 
-  request.onsuccess = (e) => {
-    db = request.result;
-    crudData(storeName, type, calendarData);
-  };
-  request.onupgradeneeded = (e) => {
-    db = e.target.result;
-    const objectStore = db.createObjectStore("calendar", {
-      autoIncrement: true,
-    });
-    const holidayStore = db.createObjectStore("holiday", {
-      autoIncrement: true,
-    });
-    const workStore = db.createObjectStore("work", {
-      autoIncrement: true,
-    });
-    objectStore.createIndex("user", "user", { unique: false });
-    objectStore.createIndex("msg", "msg", { unique: false });
-    objectStore.createIndex("date", "date", { unique: false });
-    holidayStore.createIndex("date", "date", { unique: false });
-    holidayStore.createIndex("name", "name", { unique: false });
-    workStore.createIndex("startTime", "startTime", { unique: false });
-    workStore.createIndex("endTime", "endTime", { unique: false });
-    workStore.createIndex("date", "date", { unique: true });
+    const request = indexedDB.open("calendarDB", 3);
 
-    db.onerror = (error) => {
-      // console.log({ error })
+    request.onupgradeneeded = (e) => {
+      const db = e.target.result;
+
+      const objectStore = db.createObjectStore("calendar", {
+        autoIncrement: true,
+      });
+
+      const holidayStore = db.createObjectStore("holiday", {
+        autoIncrement: true,
+      });
+
+      const workStore = db.createObjectStore("work", {
+        autoIncrement: true,
+      });
+
+      objectStore.createIndex("user", "user", { unique: false });
+      objectStore.createIndex("msg", "msg", { unique: false });
+      objectStore.createIndex("date", "date", { unique: false });
+
+      holidayStore.createIndex("date", "date", { unique: false });
+      holidayStore.createIndex("name", "name", { unique: false });
+
+      workStore.createIndex("startTime", "startTime", { unique: false });
+      workStore.createIndex("endTime", "endTime", { unique: false });
+      workStore.createIndex("date", "date", { unique: true });
     };
-  };
+
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
 }
-function crudData(storeName, type, calendarData) {
-  const dataTransaction = db.transaction(storeName, "readwrite");
-  const dataStore = dataTransaction.objectStore(storeName);
+
+/* ===============================
+✅ 2️⃣ Store 헬퍼
+================================ */
+function getStore(db, storeName, mode = "readwrite") {
+  const tx = db.transaction(storeName, mode);
+  return tx.objectStore(storeName);
+}
+
+/* ===============================
+✅ 3️⃣ connectionDB (완전 동기식 진입)
+================================ */
+async function connectionDB(storeName, type, calendarData = {}) {
+  try {
+    const db = await openDB();
+    await crudData(db, storeName, type, calendarData);
+  } catch (e) {
+    console.error("DB Error:", e);
+  }
+}
+
+/* ===============================
+✅ 4️⃣ CRUD 전체 동기식 변환
+================================ */
+async function crudData(db, storeName, type, calendarData) {
+  const dataStore = getStore(db, storeName);
+
   const crud = {
-    insert: function () {
-      // console.log('insert')
+    /* ✅ INSERT */
+    insert: async () => {
       countBadge(calendarData.date, 1);
-      const req = dataStore.add({ pk: Date.now(), ...calendarData });
-      req.onsuccess = (res) => {
-        appendData({ ...calendarData, key: res.target.result });
-      };
+      const key = await new Promise((resolve, reject) => {
+        const req = dataStore.add({ pk: Date.now(), ...calendarData });
+        req.onsuccess = (e) => resolve(e.target.result);
+        req.onerror = () => reject(req.error);
+      });
+
+      appendData({ ...calendarData, key });
     },
-    insertHoliday: function () {
-      // console.log('insert')
-      dataStore.add({ pk: Date.now(), ...calendarData }).onsuccess = async (
-        res
-      ) => {
-        const cursorData = res.target.result;
-        // console.log("TEST eventDay.solarEventKey", cursorData);
-        getHolidayData();
-      };
+
+    /* ✅ HOLIDAY INSERT */
+    insertHoliday: async () => {
+      await new Promise((resolve, reject) => {
+        const req = dataStore.add({ pk: Date.now(), ...calendarData });
+        req.onsuccess = resolve;
+        req.onerror = () => reject(req.error);
+      });
+
+      getHolidayData();
     },
-    insertWorkTime: function () {
+
+    /* ✅ WORK TIME INSERT OR UPDATE */
+    insertWorkTime: async () => {
+      const index = dataStore.index("date");
+      const existing = await new Promise((resolve) => {
+        const req = index.openCursor(IDBKeyRange.only(calendarData.date));
+        req.onsuccess = () => resolve(req.result);
+      });
+
+      if (existing) {
+        const updated = { ...existing.value, ...calendarData };
+        existing.update(updated);
+      } else {
+        await new Promise((resolve) => {
+          const req = dataStore.add({ pk: Date.now(), ...calendarData });
+          req.onsuccess = resolve;
+        });
+
+        setSelectedWorkTime(calendarData.startTime, calendarData.endTime, true);
+      }
+    },
+
+    /* ✅ SELECT ALL */
+    selectAll: async () => {
       const index = dataStore.index("date");
 
-      // ① 날짜(date) 인덱스로 검색
-      const request = index.openCursor(IDBKeyRange.only(calendarData.date));
+      await new Promise((resolve) => {
+        index.openCursor(null, "prev").onsuccess = (e) => {
+          const cursor = e.target.result;
+          if (!cursor) return resolve();
 
-      request.onsuccess = () => {
-        const cursor = request.result;
-
-        if (cursor) {
-          console.log("update");
-          const existing = cursor.value;
-
-          const updated = {
-            ...existing,
-            ...calendarData, // 새로운 값 적용 (value 등)
-          };
-
-          cursor.update(updated);
-          // .onsuccess = () => {};
-        } else {
-          console.log("insert");
-          dataStore.add({ pk: Date.now(), ...calendarData }).onsuccess = () => {
-            setSelectedWorkTime(
-              calendarData.startTime,
-              calendarData.endTime,
-              true
-            );
-          };
-        }
-      };
-    },
-    selectAll: function () {
-      dataStore.index("date").openCursor(null, "prev").onsuccess = (res) => {
-        const cursor = res.target.result;
-        if (!cursor) return;
-        const cursorData = { ...cursor.value, key: cursor.primaryKey };
-        countBadge(cursorData.date, 1);
-        createListData(cursorData);
-        cursor.continue();
-      };
-      // console.log("TEST select all complete");
+          const cursorData = { ...cursor.value, key: cursor.primaryKey };
+          countBadge(cursorData.date, 1);
+          createListData(cursorData);
+          cursor.continue();
+        };
+      });
     },
 
-    selectHolidayAll: function async() {
-      dataStore.index("date").openCursor(null, "prev").onsuccess = async (
-        res
-      ) => {
-        const cursor = res.target.result;
-        if (!cursor) return;
-        const cursorData = { ...cursor.value, key: cursor.primaryKey };
-        // const date = cursorData.date.slice(5).replace("-", "");
-        const date = cursorData.date;
-        // console.log("TEST eventDay.solarEventKey", eventDay.solarEventKey);
-        !eventDay.solarEventKey && (eventDay.solarEventKey = {});
-        // console.log("TEST eventDay.solarEventKey", eventDay.solarEventKey);
-        eventDay.solarEvent[date] = cursorData.name;
-        eventDay.solarEventKey[date] = cursorData.key;
-        holidayList();
-        cursor.continue();
-        // console.log("TEST select holiday all complete");
-      };
+    /* ✅ SELECT HOLIDAY ALL */
+    selectHolidayAll: async () => {
+      const index = dataStore.index("date");
+
+      await new Promise((resolve) => {
+        index.openCursor(null, "prev").onsuccess = (e) => {
+          const cursor = e.target.result;
+          if (!cursor) return resolve();
+
+          const cursorData = { ...cursor.value, key: cursor.primaryKey };
+          const date = cursorData.date;
+
+          !eventDay.solarEventKey && (eventDay.solarEventKey = {});
+          eventDay.solarEvent[date] = cursorData.name;
+          eventDay.solarEventKey[date] = cursorData.key;
+
+          holidayList();
+          cursor.continue();
+        };
+      });
     },
 
-    // 근무시간 리스트 가져오기
-    selectWorkTimeList: function () {
-      console.log("selectWorkTimeList", calendarData.date);
-
+    /* ✅ WORK TIME LIST (월별) */
+    selectWorkTimeList: async () => {
       if (!calendarData.date) return;
 
-      const selectDate = calendarData.date.substring(0, 7); // 'YYYY-MM'
-      const start = `${selectDate}-01`; // 2025-11-01
-      const end = `${selectDate}-31`; // 2025-11-31 (31까지 OK)
+      const selectDate = calendarData.date.substring(0, 7);
+      const start = `${selectDate}-01`;
+      const end = `${selectDate}-31`;
       const index = dataStore.index("date");
-
       const range = IDBKeyRange.bound(start, end);
 
-      const request = index.getAll(range);
+      const list = await new Promise((resolve) => {
+        const req = index.getAll(range);
+        req.onsuccess = () => resolve(req.result);
+      });
 
-      request.onsuccess = () => {
-        request.result.forEach((v) => {
-          workTime[v.date] = true;
-        });
-        console.log("월 데이터:", workTime);
-        createWorkTimeList(request.result);
-      };
+      workTime = {};
+      list.forEach((v) => (workTime[v.date] = true));
+      createWorkTimeList(list);
     },
 
-    // 선택날짜 근무시간 가져오기
-    selectWorkTime: function () {
-      const index = dataStore.index("date");
-
+    /* ✅ SELECT WORK TIME (하루) */
+    selectWorkTime: async () => {
       if (!calendarData.date) return;
 
-      const request = index.openCursor(IDBKeyRange.only(calendarData.date));
+      const index = dataStore.index("date");
+      const cursor = await new Promise((resolve) => {
+        index.openCursor(IDBKeyRange.only(calendarData.date)).onsuccess = (e) =>
+          resolve(e.target.result);
+      });
 
-      request.onsuccess = () => {
-        const cursor = request.result;
-
-        if (cursor) {
-          const { startTime, endTime } = cursor.value;
-          setSelectedWorkTime(startTime, endTime, true);
-        } else {
-          // 기본 출퇴근 시간 설정
-          setSelectedWorkTime("08:20", "18:00", false);
-        }
-      };
+      if (cursor) {
+        const { startTime, endTime } = cursor.value;
+        setSelectedWorkTime(startTime, endTime, true);
+      } else {
+        setSelectedWorkTime("08:20", "18:00", false);
+      }
     },
 
-    // 이벤트 가져오기
-    selectEvent: function () {
+    /* ✅ EVENT SEARCH */
+    selectEvent: async () => {
       const index = dataStore.index("msg");
       const range = IDBKeyRange.bound("[#]", "[#]\uffff");
-      const request = index.getAll(range);
 
-      dataStore.index("date").openCursor(null, "prev");
+      const list = await new Promise((resolve) => {
+        const req = index.getAll(range);
+        req.onsuccess = () => {
+          resolve(req.result);
+        };
+      });
 
-      // const request = dataStore.openCursor(range);
-      request.onsuccess = (_res) => {
-        const cursor = request.result;
-        console.log("Event", cursor);
-        createEventList(cursor);
-      };
+      createEventList(list);
     },
 
-    select: function () {
+    /* ✅ SELECT BY DATE */
+    select: async () => {
       const index = dataStore.index("date");
 
-      const keyRange = IDBKeyRange.only(calendarData.date);
-      // console.log('select:', { calendarData, keyRange })
+      await new Promise((resolve) => {
+        index.openCursor(IDBKeyRange.only(calendarData.date)).onsuccess = (
+          e
+        ) => {
+          const cursor = e.target.result;
+          if (!cursor) return resolve();
 
-      index.openCursor(keyRange).onsuccess = (res) => {
-        const cursor = res.target.result;
-        // console.log({ cursor })
-        if (!cursor) return;
-        const cursorData = { ...cursor.value, key: cursor.primaryKey };
-        appendData(cursorData);
-        cursor.continue();
-      };
-      dataTransaction.oncomplete = () => {};
+          const cursorData = { ...cursor.value, key: cursor.primaryKey };
+          appendData(cursorData);
+          cursor.continue();
+        };
+      });
     },
-    update: function (key) {
-      console.log("update not support", key);
-      // dataStore.openCursor().onsuccess = (res) => {
-      //   const cursor = res.target.result
-      //   if (cursor && cursor.key === calendarData.key) {
-      //     cursor.update({ ...cursor.value, ...calendarData })
-      //     return
-      //   }
-      //   cursor.continue()
-      // }
+
+    /* ✅ DELETE */
+    delete: async () => {
+      await new Promise((resolve) => {
+        const req = dataStore.delete(calendarData.key);
+        req.onsuccess = resolve;
+      });
+
+      countBadge(calendarData.date, -1);
+      loadData(todoDate.textContent);
     },
-    delete: function () {
-      const request = dataStore.delete(calendarData.key);
-      // console.log("delete request", calendarData.key);
-      request.onsuccess = (res) => {
-        countBadge(calendarData.date, -1);
-        loadData(todoDate.textContent);
-      };
-    },
-    deleteHoliday: function () {
+
+    /* ✅ DELETE HOLIDAY */
+    deleteHoliday: async () => {
       const index = dataStore.index("date");
+      const cursor = await new Promise((resolve) => {
+        index.openCursor(IDBKeyRange.only(calendarData.date)).onsuccess = (e) =>
+          resolve(e.target.result);
+      });
 
-      // ① 날짜(date) 인덱스로 검색
-      const request = index.openCursor(IDBKeyRange.only(calendarData.date));
+      if (cursor) {
+        await new Promise((resolve) => {
+          dataStore.delete(cursor.primaryKey).onsuccess = resolve;
+        });
 
-      request.onsuccess = () => {
-        const cursor = request.result;
-
-        if (cursor) {
-          dataStore.delete(cursor.primaryKey).onsuccess = async (res) => {
-            delete eventDay.solarEvent[calendarData.date];
-            holidayList();
-            await createCalendar();
-            checkDateList(checkedListData);
-          };
-        }
-      };
+        delete eventDay.solarEvent[calendarData.date];
+        holidayList();
+        await createCalendar();
+        checkDateList(checkedListData);
+      }
     },
-    deleteWorkTime: function () {
-      console.log(eventDay.solarEventKey);
 
+    /* ✅ DELETE WORK TIME */
+    deleteWorkTime: async () => {
       const index = dataStore.index("date");
+      const cursor = await new Promise((resolve) => {
+        index.openCursor(IDBKeyRange.only(calendarData.date)).onsuccess = (e) =>
+          resolve(e.target.result);
+      });
 
-      // ① 날짜(date) 인덱스로 검색
-      const request = index.openCursor(IDBKeyRange.only(calendarData.date));
+      if (cursor) {
+        await new Promise((resolve) => {
+          dataStore.delete(cursor.primaryKey).onsuccess = resolve;
+        });
 
-      request.onsuccess = () => {
-        const cursor = request.result;
-
-        if (cursor) {
-          dataStore.delete(cursor.primaryKey).onsuccess = async (res) => {
-            this.selectWorkTimeList();
-          };
-        }
-      };
+        await getWorkTimeData();
+        await getSelectEvent();
+        await createCalendar();
+      }
     },
   };
 
-  crud[type]();
+  await crud[type]();
 }

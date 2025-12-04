@@ -66,7 +66,7 @@ const cf = {
 };
 
 // 출퇴근PK
-const workTime = {};
+let workTime = {};
 
 const today = new Date();
 const year = today.getFullYear();

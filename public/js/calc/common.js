@@ -23,14 +23,14 @@ async function getDateApi(year) {
 }
 
 // 휴가 업데이트
-function updateHoliday() {
+async function updateHoliday() {
   // console.log(todoDate.textContent);
-  connectionDB("holiday", "deleteHoliday", {
+  await connectionDB("holiday", "deleteHoliday", {
     key: todoDate.textContent,
     date: todoDate.textContent,
   });
   if (todoCheckedHoliday.checked) {
-    connectionDB("holiday", "insertHoliday", {
+    await connectionDB("holiday", "insertHoliday", {
       date: todoDate.textContent,
       name: "월차",
     });
@@ -49,9 +49,9 @@ function getHolidayData() {
 }
 
 // 근무시간 데이터 가져오기
-function getWorkTimeData(date = getTodayDate(), onlyToday = false) {
-  connectionDB("work", "selectWorkTimeList", { date });
-  connectionDB("work", "selectWorkTime", {
+async function getWorkTimeData(date = getTodayDate(), onlyToday = false) {
+  await connectionDB("work", "selectWorkTimeList", { date });
+  await connectionDB("work", "selectWorkTime", {
     date: onlyToday ? getTodayDate() : date,
   });
   workMonth.value = date.substring(0, 7);
@@ -67,8 +67,8 @@ function createWorkTimeList(workTimeData) {
 
     workTimeItem.textContent = `${v.date} : ${v.startTime} ~ ${v.endTime}`;
     workTimeItemBtn.textContent = "X";
-    workTimeItemBtn.addEventListener("click", () => {
-      connectionDB("work", "deleteWorkTime", { key: v.pk, date: v.date });
+    workTimeItemBtn.addEventListener("click", async () => {
+      await connectionDB("work", "deleteWorkTime", { key: v.pk, date: v.date });
     });
 
     workTimeItem.appendChild(workTimeItemBtn);
@@ -106,8 +106,8 @@ function holidayList(year = `${new Date().getFullYear()}`) {
     const holidayItemBtn = document.createElement("button");
     holidayItem.textContent = `${k[0]} : ${k[1]} `;
     holidayItemBtn.textContent = "X";
-    holidayItemBtn.addEventListener("click", () => {
-      connectionDB("holiday", "deleteHoliday", {
+    holidayItemBtn.addEventListener("click", async () => {
+      await connectionDB("holiday", "deleteHoliday", {
         key: k[0],
         date: k[0],
       });
@@ -578,8 +578,8 @@ function appendData({ key, date, user, msg }) {
 
   button.textContent = "X";
 
-  button.addEventListener("click", () => {
-    connectionDB("calendar", "delete", { key, date });
+  button.addEventListener("click", async () => {
+    await connectionDB("calendar", "delete", { key, date });
     // console.log("삭제:", { key, date });
     socket.emit("calendar refesh", { date, num: selectCountBadge(date) });
   });
@@ -684,14 +684,18 @@ function getTodayDate() {
 }
 
 // 출퇴근 시간 설정 저장
-function setWorkTime() {
+async function setWorkTime() {
   const workDate = workTimeBtn.dataset.date || getTodayDate();
 
-  connectionDB("work", "insertWorkTime", {
+  await connectionDB("work", "insertWorkTime", {
     startTime: workStartTime.value,
     endTime: workEndTime.value,
     date: workDate,
   });
+
+  await getWorkTimeData();
+  await getSelectEvent();
+  await createCalendar();
 }
 
 // 선택된 출퇴근 시간 설정
@@ -709,17 +713,19 @@ function setSelectedWorkTime(startTime, endTime, isSavedWorkTime) {
 }
 
 // 이벤트 가져오기
-function getSelectEvent() {
-  // selectEvent
-  // console.log("select event");
-  connectionDB("calendar", "selectEvent", {});
+async function getSelectEvent() {
+  await connectionDB("calendar", "selectEvent", {});
 }
 
 // 이벤트 리스트 생성
-const eventAllList = {};
-const eventDateList = {};
+let eventAllList = {};
+let eventDateList = {};
 let eventTotalMoney = 0;
 function createEventList(dataList) {
+  eventAllList = {};
+  eventDateList = {};
+  eventTotalMoney = 0;
+
   // 전체 이벤트 소팅 및 금액 배열
   dataList.forEach((v) => {
     // 전체 Event 리스트 OBJECT 생성

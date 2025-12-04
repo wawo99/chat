@@ -17,9 +17,10 @@ socket.on("checked date list", (checkedList) => {
   getSelectEvent();
 });
 
-socket.on("calendarRefesh", ({ date, num }) => {
-  // console.log("calendarRefesh", date);
-  createCalendar();
+socket.on("calendarRefesh", async ({ date, num }) => {
+  console.log("calendarRefesh", date);
+  await getSelectEvent();
+  await createCalendar();
   // createCalendar(false, false);
   // location.reload();
   // setCountBadge(date, num);
