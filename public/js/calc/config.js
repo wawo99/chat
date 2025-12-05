@@ -70,6 +70,8 @@ const WORK = {
   workTime: {},
 };
 
+let checkedListData = [];
+
 // EVENT 설정
 const EVENT = {
   eventAllList: {},

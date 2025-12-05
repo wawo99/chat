@@ -87,7 +87,9 @@ convertCalendarList.addEventListener("click", async (e) => {
 let isTransitioningWidth = 0;
 const observer = new ResizeObserver(async (entries) => {
   const w = Math.floor(entries[0].contentRect.width);
-  if (isTransitioningWidth === w) return;
+
+  // 10의 의미는 스크롤 넓이 오차범위
+  if (Math.abs(isTransitioningWidth - w) <= 10) return;
   isTransitioningWidth = w;
   // console.log(
   //   "entries",

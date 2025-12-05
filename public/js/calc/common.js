@@ -22,6 +22,17 @@ async function getDateApi(year) {
     });
 }
 
+function debounce(fn, delay = 300) {
+  let timer;
+
+  return function (...args) {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      fn.apply(this, args);
+    }, delay);
+  };
+}
+
 function isMobile() {
   return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 }
@@ -396,7 +407,7 @@ async function createCalendar(isChangeYear = false, isEffect = true) {
         );
       });
     }
-    if (EVENT.memoryList[solarFullDateKey]) {
+    if (EVENT.memoryList && EVENT.memoryList[solarFullDateKey]) {
       Object.values(EVENT.memoryList[solarFullDateKey]).forEach((v) => {
         eventLoveDayElement += getDateTemplate(
           `<div class='memory-cell' title='${v.event}'><span class='star'>★</span> ${v.event}</div>`,

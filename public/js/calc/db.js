@@ -121,7 +121,7 @@ async function crudData(db, storeName, type, calendarData) {
           if (!cursor) return resolve();
 
           const cursorData = { ...cursor.value, key: cursor.primaryKey };
-          countBadge(cursorData.date, 1);
+          debounce(countBadge(cursorData.date, 1), 300);
           createListData(cursorData);
           cursor.continue();
         };

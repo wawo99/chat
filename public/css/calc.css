@@ -4,7 +4,9 @@ body {
   height: 100%;
   margin: 0;
   padding: 0;
-  overflow: hidden; /* ✅ 가장 중요 */
+  overflow-x: hidden;
+  overflow-y: hidden;
+  /* overflow: hidden; */
 }
 
 @keyframes blink {
@@ -392,5 +394,10 @@ body {
     z-index: -1;
     background-color: black;
     opacity: 0;
+  }
+  .box_flex {
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: 100%;
   }
 }
