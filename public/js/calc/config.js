@@ -66,7 +66,16 @@ const cf = {
 };
 
 // 출퇴근PK
-let workTime = {};
+const WORK = {
+  workTime: {},
+};
+
+// EVENT 설정
+const EVENT = {
+  eventAllList: {},
+  eventDateList: {},
+  eventTotalMoney: 0,
+};
 
 const today = new Date();
 const year = today.getFullYear();
@@ -78,21 +87,21 @@ let changedDate;
 let isCalc = true;
 const windowTheme = window.matchMedia("(perfers-color-scheme: dark)");
 const todo = document.getElementById("todo");
-const todoDate = document.getElementById("todo-date");
-const todoCheckedHoliday = document.getElementById("todo-checked-holiday");
-const todoBoxMsg = document.getElementById("todo-box-msg");
-const todoList = document.getElementById("todo-list");
+const todoDate = document.getElementById("todoDate");
+const todoCheckedHoliday = document.getElementById("todoCheckedHoliday");
+const todoBoxMsg = document.getElementById("todoBoxMsg");
+const todoList = document.getElementById("todoList");
 const calendarBox = document.getElementById("calendarBox");
 let db;
 
 // gnb
-const menuLogo = document.getElementById("menu-logo");
-const menuBox = document.getElementById("menu-box");
-const menuCard = document.getElementById("menu-card");
+const menuLogo = document.getElementById("menuLogo");
+const menuBox = document.getElementById("menuBox");
+const menuCard = document.getElementById("menuCard");
 const menus = document.querySelectorAll(".menu");
 
-// coffee-box
-const coffeeBox = document.getElementById("coffee-box");
+// coffeeBox
+const coffeeBox = document.getElementById("coffeeBox");
 coffeeBox.style.display = cf.coffe ? "block" : "none";
 
 // calendarLayout
@@ -100,7 +109,7 @@ const calendarLayout = document.getElementById("calendarLayout");
 const calendarList = document.getElementById("calendarList");
 
 // 달력 전환 버튼
-const convertCalendarList = document.getElementById("convert-calendar-list");
+const convertCalendarList = document.getElementById("convertCalendarList");
 
 // 근무시간 리스트
 const workTimeList = document.getElementById("workTimeList");
@@ -116,4 +125,8 @@ const eventTotal = document.getElementById("eventTotal");
 const eventSelect = document.getElementById("eventSelect");
 const eventStartDate = document.getElementById("eventStartDate");
 const eventEndDate = document.getElementById("eventEndDate");
-const todoCheckedEventday = document.getElementById("todo-checked-eventday");
+const todoCheckedEventday = document.getElementById("todoCheckedEventday");
+
+// 메모리
+const memoryList = document.getElementById("memoryList");
+const todoCheckedMemory = document.getElementById("todoCheckedMemory");

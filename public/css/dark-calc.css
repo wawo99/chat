@@ -2,23 +2,23 @@
   background-color: black;
 }
 #dark .순도 {
-  color: rgb(240, 225, 13);
+  color: #f0e10d;
 }
 #dark .우현 {
-  color: rgb(43, 226, 195);
+  color: #2be2c3;
 }
 #dark .쿠폰 {
-  color: rgb(255, 19, 196);
+  color: #ff13c4;
 }
 #dark .title {
   padding: 10px;
   font-size: 11px;
   font-weight: bold;
-  color: rgb(218, 221, 32);
+  color: #dadd20;
 }
 #dark select {
   height: 30px;
-  border: 1px solid rebeccapurple;
+  border: 1px solid #663399;
   background-color: #462079;
   padding: 3px;
   margin: 2px 2px 2px 2px;
@@ -26,7 +26,7 @@
   outline: none;
 }
 #dark button {
-  border: 1px solid rebeccapurple;
+  border: 1px solid #663399;
   background-color: #462079;
   margin: auto 2px;
   color: #756597;
@@ -59,7 +59,7 @@
   width: 100%;
 }
 #dark .box {
-  border: 1px solid rgb(28, 28, 28);
+  border: 1px solid #1c1c1c;
 }
 #dark .content {
   width: 100%;
@@ -75,7 +75,7 @@
   text-align: center;
 }
 #dark .empty-box {
-  border: 1px solid rgb(20, 20, 20);
+  border: 1px solid #141414;
 }
 #dark .box .date {
   color: #929292;
@@ -122,17 +122,17 @@
   color: #462079 !important;
 }
 #dark .sunday {
-  color: rgb(71, 71, 71);
+  color: #474747;
 }
 #dark .saturday {
-  color: rgb(86, 86, 86);
+  color: #565656;
 }
 #dark .holiday {
-  background-color: rgba(70, 70, 70, 0.35);
+  background-color: #46464659;
 }
 #dark #todo input,
 #dark #todo textarea {
-  border: 1px solid rebeccapurple;
+  border: 1px solid #663399;
   background-color: #462079;
   color: #756597;
 }
@@ -140,5 +140,15 @@
   background-color: #462079;
 }
 #dark .todo-box-header {
-  color: rgb(190, 155, 195);
+  color: #be9bc3;
+}
+
+@media (max-width: 768px) {
+  #dark #calendarLayout {
+    width: 100%;
+  }
+
+  #dark #calendarInfo {
+    text-align: center;
+  }
 }

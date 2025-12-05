@@ -22,6 +22,10 @@ async function getDateApi(year) {
     });
 }
 
+function isMobile() {
+  return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+}
+
 // 휴가 업데이트
 async function updateHoliday() {
   // console.log(todoDate.textContent);
@@ -125,13 +129,21 @@ function holidayList(year = `${new Date().getFullYear()}`) {
 }
 
 // 테마 토글
-function toggleTheme(init = false) {
+function toggleTheme(init = false, themeName = "") {
   const body = document.getElementsByTagName("body")[0];
   const theme = body.id;
   const themeConfig = {
     dark: "white",
     white: "dark",
   };
+
+  // 테마 지정
+  if (themeName) {
+    localStorage.setItem("theme", themeName);
+    return;
+  }
+
+  // 테마 자동 기능
   if (init) {
     const themeItem = localStorage.getItem("theme");
     // console.log({ themeItem })
@@ -376,11 +388,19 @@ async function createCalendar(isChangeYear = false, isEffect = true) {
 
     // 이벤트♡ 표시
     let eventLoveDayElement = "";
-    if (eventDateList[solarFullDateKey]) {
-      Object.values(eventDateList[solarFullDateKey]).forEach((v) => {
+    if (EVENT.eventDateList[solarFullDateKey]) {
+      Object.values(EVENT.eventDateList[solarFullDateKey]).forEach((v) => {
         eventLoveDayElement += getDateTemplate(
           v.elementHtml,
           `event-love-date ${v.className}`
+        );
+      });
+    }
+    if (EVENT.memoryList[solarFullDateKey]) {
+      Object.values(EVENT.memoryList[solarFullDateKey]).forEach((v) => {
+        eventLoveDayElement += getDateTemplate(
+          `<div class='memory-cell' title='${v.event}'><span class='star'>★</span> ${v.event}</div>`,
+          `event-memory-date`
         );
       });
     }
@@ -422,13 +442,13 @@ async function createCalendar(isChangeYear = false, isEffect = true) {
       );
 
       // 근무시간 입력 유무 아이콘 표시
-      const tryangleIcon = workTime[solarFullDateKey]
+      const tryangleIcon = WORK.workTime[solarFullDateKey]
         ? "<div class='tryangle-icon'></div>"
         : "";
 
       box.innerHTML = `<div class='date'><span class='${
         weekOfDayObject[weekOfDay] ?? ""
-      }'>${date}</span>${lunarDateElement}${eventDayElement}${tryangleIcon}</div><div>${birthdayObjElement}</div><div>${eventLoveDayElement}</div>`;
+      }'>${date}</span>${lunarDateElement}<div>${eventDayElement}</div>${tryangleIcon}</div><div>${birthdayObjElement}</div><div>${eventLoveDayElement}</div>`;
     }
 
     box.innerHTML += `<div class='badge' id='badge-${solarFullDateKey}'></div>`;
@@ -706,39 +726,45 @@ function setSelectedWorkTime(startTime, endTime, isSavedWorkTime) {
 
 // 이벤트 가져오기
 async function getSelectEvent() {
-  await connectionDB("calendar", "selectEvent", {});
+  await connectionDB("calendar", "selectEvent", {
+    firstWord: "[#]",
+    type: "event",
+  });
+  await connectionDB("calendar", "selectEvent", {
+    firstWord: "[$]",
+    type: "memory",
+  });
 }
 
 // 이벤트 리스트 생성
-let eventAllList = {};
-let eventDateList = {};
-let eventTotalMoney = 0;
 function createEventList(dataList) {
-  eventAllList = {};
-  eventDateList = {};
-  eventTotalMoney = 0;
+  EVENT.eventAllList = {};
+  EVENT.eventDateList = {};
+  EVENT.eventTotalMoney = 0;
 
   // 전체 이벤트 소팅 및 금액 배열
   dataList.forEach((v) => {
     // 전체 Event 리스트 OBJECT 생성
     const event = v.msg.match(/[\uAC00-\uD7A3]+/g)[0];
     const money = v.msg.match(/[0-9]+/g)[0];
-    !eventAllList[event] && (eventAllList[event] = []);
-    eventAllList[event].push({ date: v.date, event, money });
+    !EVENT.eventAllList[event] && (EVENT.eventAllList[event] = []);
+    EVENT.eventAllList[event].push({ date: v.date, event, money });
 
     // total 금액
-    eventTotalMoney += money * 1;
+    EVENT.eventTotalMoney += money * 1;
 
     // 이벤트 표시 위한 리스트 생성
-    !eventDateList[v.date] && (eventDateList[v.date] = []);
-    eventDateList[v.date].push({
-      elementHtml: `<span>♥</span>`,
+    !EVENT.eventDateList[v.date] && (EVENT.eventDateList[v.date] = []);
+    EVENT.eventDateList[v.date].push({
+      elementHtml: `<span class='hart' style='--rand: ${
+        Math.random() * 1.3
+      } '>♥</span>`,
       className: event,
     });
   });
 
   // 날짜 정렬
-  Object.values(eventAllList).forEach((v) => {
+  Object.values(EVENT.eventAllList).forEach((v) => {
     v.sort((a, b) => {
       return new Date(a.date) - new Date(b.date);
     });
@@ -751,17 +777,17 @@ function createEventList(dataList) {
   optionAll.textContent = "전체";
   eventSelect.append(optionAll);
 
-  Object.keys(eventAllList).forEach((v) => {
+  Object.keys(EVENT.eventAllList).forEach((v) => {
     const option = document.createElement("option");
 
     option.value = v;
     option.id = v;
-    option.textContent = `${v} (${eventAllList[v].length})`;
+    option.textContent = `${v} (${EVENT.eventAllList[v].length})`;
     // console.log(option);
     eventSelect.append(option);
   });
 
-  eventTotal.textContent = eventTotalMoney;
+  eventTotal.textContent = EVENT.eventTotalMoney;
 
   changeEventSelect("all");
 }
@@ -774,7 +800,7 @@ function changeEventSelect() {
   let listAll = [];
   let total = 0;
 
-  Object.values(eventAllList).forEach((v) => {
+  Object.values(EVENT.eventAllList).forEach((v) => {
     listAll = [...listAll, ...v];
   });
 
@@ -783,7 +809,7 @@ function changeEventSelect() {
     return new Date(a.date) - new Date(b.date);
   });
 
-  const L = selected === "all" ? listAll : eventAllList[selected];
+  const L = selected === "all" ? listAll : EVENT.eventAllList[selected];
 
   boundryEventDate(L).forEach((v) => {
     const item = document.createElement("div");
@@ -816,4 +842,34 @@ function boundryEventDate(list) {
 // 이벤트 형태 텍스트 적용하기
 function updateEventDay() {
   todoBoxMsg.value = todoCheckedEventday.checked ? "[#] 이브 6" : "";
+}
+
+// 이벤트 형태 텍스트 적용하기
+function updateMemory() {
+  todoBoxMsg.value = todoCheckedMemory.checked ? "[$] ok" : "";
+}
+
+// 메모리 리스트 생성
+function createMemoryList(dataList) {
+  EVENT.memoryList = [];
+
+  // 전체 메모리 배열
+  dataList.forEach((v) => {
+    const event = v.msg.replace("[$] ", "");
+    !EVENT.memoryList[v.date] && (EVENT.memoryList[v.date] = []);
+    EVENT.memoryList[v.date].push({ date: v.date, event });
+  });
+
+  // // 날짜 정렬
+  // EVENT.memoryList.sort((a, b) => {
+  //   return new DEVENT.memoryListate(a.date) - new Date(b.date);
+  // });
+
+  Object.values(EVENT.memoryList).forEach((v) => {
+    v.forEach((vv) => {
+      const item = document.createElement("div");
+      item.textContent = `${vv.date} : ${vv.event}`;
+      memoryList.appendChild(item);
+    });
+  });
 }

@@ -165,8 +165,9 @@ async function crudData(db, storeName, type, calendarData) {
         req.onsuccess = () => resolve(req.result);
       });
 
-      workTime = {};
-      list.forEach((v) => (workTime[v.date] = true));
+      WORK.workTime = {};
+
+      list.forEach((v) => (WORK.workTime[v.date] = true));
       createWorkTimeList(list);
     },
 
@@ -191,7 +192,10 @@ async function crudData(db, storeName, type, calendarData) {
     /* ✅ EVENT SEARCH */
     selectEvent: async () => {
       const index = dataStore.index("msg");
-      const range = IDBKeyRange.bound("[#]", "[#]\uffff");
+      const range = IDBKeyRange.bound(
+        calendarData.firstWord,
+        `${calendarData.firstWord}\uffff`
+      );
 
       const list = await new Promise((resolve) => {
         const req = index.getAll(range);
@@ -200,7 +204,8 @@ async function crudData(db, storeName, type, calendarData) {
         };
       });
 
-      createEventList(list);
+      calendarData.type === "event" && createEventList(list);
+      calendarData.type === "memory" && createMemoryList(list);
     },
 
     /* ✅ SELECT BY DATE */
