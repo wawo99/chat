@@ -45,13 +45,15 @@
           </div>
         </div>
         <div id="menu2" class="menu">
-          <button type="button" onclick="exportIndexedDB('calendarDB')">
+          <!-- <button type="button" onclick="exportIndexedDB('calendarDB')"> -->
+          <button type="button" onclick="uploadIndexedDBToServer('calendarDB')">
             데이터백업
           </button>
         </div>
         <div id="menu3" class="menu">
-          <input type="file" id="importFile" accept=".json" />
-          <button type="button" onclick="importIndexedDB('calendarDB')">
+          <!-- <input type="file" id="importFile" accept=".json" /> -->
+          <!-- <button type="button" onclick="importIndexedDB('calendarDB')"> -->
+          <button type="button" onclick="importIndexedDB2('calendarDB')">
             데이터복원
           </button>
         </div>
