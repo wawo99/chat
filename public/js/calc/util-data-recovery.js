@@ -68,6 +68,7 @@ async function importIndexedDB(dbName) {
 }
 
 async function uploadIndexedDBToServer(dbName) {
+  loading.style.display = "block";
   return new Promise((resolve, reject) => {
     const request = indexedDB.open(dbName);
 
@@ -107,9 +108,14 @@ async function uploadIndexedDBToServer(dbName) {
 
         if (!res.ok) throw new Error("업로드 실패");
 
+        alert("서버에 백업이 완료되었습니다.");
+
         resolve("✅ 서버 업로드 백업 완료!");
       } catch (err) {
+        alert("서버 업로드에 실패했습니다.");
         reject("❌ 서버 업로드 실패");
+      } finally {
+        loading.style.display = "none";
       }
     };
 
@@ -155,6 +161,7 @@ function deleteIndexedDBSafe(dbName) {
 }
 
 async function importIndexedDB2(dbName) {
+  loading.style.display = "block";
   await deleteIndexedDBSafe(dbName);
   await openDB(); // DB 재생성 대기
   const res = await fetch(`/api/db-backup/${dbName}`);
@@ -177,6 +184,7 @@ async function importIndexedDB2(dbName) {
     }
 
     alert("복원 완료!");
+    loading.style.display = "none";
     location.reload();
   };
 }

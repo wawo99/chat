@@ -151,4 +151,31 @@
   #dark #calendarInfo {
     text-align: center;
   }
+
+  #dark .holi-date {
+    color: #4b42cd;
+  }
+
+  #dark select {
+    border: 1px solid #2f2986;
+    background-color: #4b42cd;
+    color: #b3a2da;
+  }
+  #dark button {
+    border: 1px solid #2f2986;
+    background-color: #4b42cd;
+    color: #b3a2da;
+  }
+
+  #dark #todo textarea {
+    border: 1px solid #2f2986;
+    background-color: #4b42cd;
+    color: #b3a2da;
+  }
+  #dark .c-box-active {
+    background-color: #1c194c;
+  }
+  #dark .todo-box-header {
+    color: #b3a2da;
+  }
 }

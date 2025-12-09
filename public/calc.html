@@ -5,18 +5,29 @@
       content="width=device-width, initial-scale=1.0, viewport-fit=cover"
     />
   </head>
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap"
+  />
   <link href="/css/github-dark-dimmed.css" rel="stylesheet" />
   <link href="/css/dark-calc.css" rel="stylesheet" />
   <link href="/css/white-calc.css" rel="stylesheet" />
   <link href="/css/calc.css" rel="stylesheet" />
   <link href="/css/cube.css" rel="stylesheet" />
   <body id="dark">
-    <div id="menuLogo">S</div>
+    <div id="loading">
+      <div class="loader">
+        <div>진행중</div>
+        <div class="loader-text-dot dot1">.</div>
+        <div class="loader-text-dot dot2">.</div>
+        <div class="loader-text-dot dot3">.</div>
+      </div>
+    </div>
+    <div id="menuLogo">⚙️</div>
     <div id="menuBox">
       <ul id="menuCard" class="cards">
         <li data-target="menu1">휴가</li>
-        <li data-target="menu2">백업</li>
-        <li data-target="menu3">복구</li>
+        <li data-target="menu2">백업/복구</li>
         <li data-target="menu4">근무시간</li>
         <li data-target="menu5">이벤트</li>
         <li data-target="menu6">기억</li>
@@ -45,17 +56,37 @@
           </div>
         </div>
         <div id="menu2" class="menu">
-          <!-- <button type="button" onclick="exportIndexedDB('calendarDB')"> -->
-          <button type="button" onclick="uploadIndexedDBToServer('calendarDB')">
-            데이터백업
-          </button>
-        </div>
-        <div id="menu3" class="menu">
-          <!-- <input type="file" id="importFile" accept=".json" /> -->
-          <!-- <button type="button" onclick="importIndexedDB('calendarDB')"> -->
-          <button type="button" onclick="importIndexedDB2('calendarDB')">
-            데이터복원
-          </button>
+          <div class="sub-title mb5">
+            <span>EXPORT ↔ IMPORT</span>
+          </div>
+          <div>
+            <button type="button" onclick="exportIndexedDB('calendarDB')">
+              파일저장
+            </button>
+            <input
+              type="file"
+              id="importFile"
+              accept=".json"
+              style="background-color: aqua"
+            />
+            <button type="button" onclick="importIndexedDB('calendarDB')">
+              불러오기
+            </button>
+          </div>
+          <div class="sub-title mb5" style="margin-top: 10px">
+            <span>BACKUP ↔ RECOVERY</span>
+          </div>
+          <div>
+            <button
+              type="button"
+              onclick="uploadIndexedDBToServer('calendarDB')"
+            >
+              데이터백업
+            </button>
+            <button type="button" onclick="importIndexedDB2('calendarDB')">
+              데이터복원
+            </button>
+          </div>
         </div>
         <div id="menu4" class="menu">
           <div class="sub-title mb5">

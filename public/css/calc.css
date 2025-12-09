@@ -9,6 +9,10 @@ body {
   /* overflow: hidden; */
 }
 
+body {
+  font-family: "Inter", "Noto Sans KR", sans-serif;
+}
+
 @keyframes blink {
   0% {
     color: #38e70e;
@@ -242,13 +246,13 @@ body {
   width: 46%;
   font-size: 11px;
   font-weight: 200;
-  z-index: 0;
+  /* z-index: 0; */
   transform-style: preserve-3d;
   transition: transform 0.8s ease;
   overflow-y: auto;
   top: 0;
   bottom: 0;
-  margin: 45px 0;
+  padding: 45px 0;
 }
 
 .icon {
@@ -377,6 +381,47 @@ body {
   position: absolute;
 }
 
+#loading {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 20000;
+  display: none;
+}
+
+.loader {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 24px;
+  color: #ffffff;
+  display: flex;
+}
+
+.loader-text-dot {
+  opacity: 0;
+  animation: blink 1.5s infinite;
+}
+.dot2 {
+  animation-delay: 0.2s;
+}
+.dot3 {
+  animation-delay: 0.4s;
+}
+
+@keyframes blink {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
 @media (max-width: 768px) {
   #calendarLayout {
     width: 100%;
@@ -387,6 +432,7 @@ body {
     width: 100%;
     height: 0;
   }
+
   .calendar-list-box {
     position: absolute;
     width: 100%;
@@ -395,9 +441,56 @@ body {
     background-color: black;
     opacity: 0;
   }
+
   .box_flex {
     overflow-y: auto;
     overflow-x: hidden;
     height: 100%;
+  }
+
+  .calendar-list-menu-show {
+    animation: calendar-list-menu-show 0.3s ease-in-out forwards;
+  }
+  .calendar-list-menu-hide {
+    animation: calendar-list-menu-hide 0.2s ease-in-out forwards;
+  }
+  @keyframes calendar-list-menu-show {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+  @keyframes calendar-list-menu-hide {
+    0% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+
+  .badge-active {
+    background-color: #4b42cd;
+    color: white;
+  }
+
+  .work-time-box input {
+    border: 1px solid #2f2986;
+    outline: none;
+    color: #16c7f3;
+    background-color: #4b42cd;
+  }
+
+  .tryangle-icon {
+    border-right: 6px solid #4b42cd;
+  }
+
+  .today {
+    background-color: #2c2959;
+  }
+  .today span {
+    color: #675d92;
   }
 }

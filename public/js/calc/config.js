@@ -132,3 +132,6 @@ const todoCheckedEventday = document.getElementById("todoCheckedEventday");
 // 메모리
 const memoryList = document.getElementById("memoryList");
 const todoCheckedMemory = document.getElementById("todoCheckedMemory");
+
+// 로딩
+const loading = document.getElementById("loading");
