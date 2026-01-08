@@ -1,4 +1,4 @@
-const socket = io();
+// const socket = io();
 const calendar = new KoreanLunarCalendar();
 const calendarForBock = new KoreanLunarCalendar();
 const eventDay = {

@@ -4,27 +4,31 @@ window.onload = function () {
   toggleTheme(true, "dark");
   hljs.highlightAll();
   menuBox.classList.add("close-menu-animation");
-};
-windowTheme.addEventListener("change", (e) => {
-  toggleTheme();
-});
-socket.emit("checked date list");
-socket.on("checked date list", (checkedList) => {
-  // console.log("checked date list", { checkedList });
-  checkedListData = checkedList;
   getHolidayData();
   getWorkTimeData();
   getSelectEvent();
-});
+};
 
-socket.on("calendarRefesh", async ({ date, num }) => {
-  console.log("calendarRefesh", date);
-  await getSelectEvent();
-  await createCalendar();
-  // createCalendar(false, false);
-  // location.reload();
-  // setCountBadge(date, num);
+windowTheme.addEventListener("change", (e) => {
+  toggleTheme();
 });
+// socket.emit("checked date list");
+// socket.on("checked date list", (checkedList) => {
+//   // console.log("checked date list", { checkedList });
+//   checkedListData = checkedList;
+//   getHolidayData();
+//   getWorkTimeData();
+//   getSelectEvent();
+// });
+
+// socket.on("calendarRefesh", async ({ date, num }) => {
+//   console.log("calendarRefesh", date);
+//   await getSelectEvent();
+//   await createCalendar();
+//   // createCalendar(false, false);
+//   // location.reload();
+//   // setCountBadge(date, num);
+// });
 
 menuLogo.addEventListener("click", function () {
   const isClose = menuBox.classList.contains("close-menu-animation");
@@ -60,17 +64,17 @@ let classToggle = 1;
 convertCalendarList.addEventListener("click", async (e) => {
   const isMobile = window.matchMedia("(max-width: 768px)").matches;
   const toggle = classToggle === 1;
+
+  calendarList.style.zIndex = toggle ? 10 : -1;
+
   if (isMobile) {
-    // calendarList.style.opacity = toggle ? 1 : 0;
     calendarLayout.style.transform = 0;
     calendarList.style.transform = 0;
-    calendarList.style.zIndex = toggle ? 10 : -1;
     calendarList.className = toggle
       ? "calendar-list-box calendar-list-menu-show"
       : "calendar-list-box calendar-list-menu-hide";
   } else {
-    calendarList.style.opacity = 1;
-    calendarList.style.zIndex = -1;
+    // calendarList.style.opacity = 1;
     calendarList.className = "calendar-list-box";
     transformX = toggle ? getComputedStyle(calendarLayout).width : 0;
     // console.log(getComputedStyle(calendarLayout).width.replace(/(px)/g, ""));

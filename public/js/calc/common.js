@@ -252,17 +252,17 @@ function checkDateList(checkedList) {
 
 // 체크리스트 삭제
 function remove(date) {
-  socket.emit("checked remove date", { date });
+  // socket.emit("checked remove date", { date });
 }
 
 // 체크리스트 등록
 function submit() {
   const selectBox = document.getElementById("selectBox");
   // console.log({ convertedToday })
-  socket.emit("checked date", {
-    date: convertedToday,
-    name: selectBox.value,
-  });
+  // socket.emit("checked date", {
+  //   date: convertedToday,
+  //   name: selectBox.value,
+  // });
 }
 
 // 달력 너비 계산
@@ -587,7 +587,7 @@ function saveTodo() {
   // console.log({ date, user, msg })
   connectionDB("calendar", "insert", { user, date, msg });
 
-  socket.emit("calendar refesh", { date, num: selectCountBadge(date) });
+  // socket.emit("calendar refesh", { date, num: selectCountBadge(date) });
 
   todoBoxMsg.value = "";
 }
@@ -604,7 +604,7 @@ function appendData({ key, date, user, msg }) {
   button.addEventListener("click", async () => {
     await connectionDB("calendar", "delete", { key, date });
     // console.log("삭제:", { key, date });
-    socket.emit("calendar refesh", { date, num: selectCountBadge(date) });
+    // socket.emit("calendar refesh", { date, num: selectCountBadge(date) });
   });
 
   codeDiv.className = "code html";
