@@ -172,9 +172,8 @@ function changeTopBarDate() {
   const year = selectDay.getFullYear();
   const month = `0${selectDay.getMonth() + 1}`.slice(-2);
   // console.log({ month })
-  document.getElementById(
-    "calendarInfo"
-  ).innerHTML = `<span class='btn' onclick='preMonth()'>이전</span><span>${year}년 ${month}월</span><span class='btn' onclick='nextMonth()'>다음</span>`;
+  document.getElementById("calendarInfo").innerHTML =
+    `<span class='btn' onclick='preMonth()'>이전</span><span>${year}년 ${month}월</span><span class='btn' onclick='nextMonth()'>다음</span>`;
 }
 
 // 결제자 체크리스트 출력
@@ -306,7 +305,7 @@ async function createCalendar(isChangeYear = false, isEffect = true) {
       calendarForBock.setSolarDate(
         currentYear,
         currentDate.getMonth() + 1,
-        currentDate.getDate()
+        currentDate.getDate(),
       );
 
       const gapja = calendarForBock.getKoreanGapja();
@@ -343,7 +342,7 @@ async function createCalendar(isChangeYear = false, isEffect = true) {
 
   function createCell(
     className,
-    { year = "", month = "", date = "", lunarDate = {} }
+    { year = "", month = "", date = "", lunarDate = {} },
   ) {
     const selectDate = new Date(`${year}-${month}-${date}`);
     const weekOfDay = selectDate.getDay();
@@ -394,7 +393,7 @@ async function createCalendar(isChangeYear = false, isEffect = true) {
 
     const eventDayElement = getDateTemplate(
       eventDay.solarEvent[solarFullDateKey],
-      "event-date"
+      "event-date",
     );
 
     // 이벤트♡ 표시
@@ -403,7 +402,7 @@ async function createCalendar(isChangeYear = false, isEffect = true) {
       Object.values(EVENT.eventDateList[solarFullDateKey]).forEach((v) => {
         eventLoveDayElement += getDateTemplate(
           v.elementHtml,
-          `event-love-date ${v.className}`
+          `event-love-date ${v.className}`,
         );
       });
     }
@@ -411,7 +410,7 @@ async function createCalendar(isChangeYear = false, isEffect = true) {
       Object.values(EVENT.memoryList[solarFullDateKey]).forEach((v) => {
         eventLoveDayElement += getDateTemplate(
           `<div class='memory-cell' title='${v.event}'><span class='star'>★</span> ${v.event}</div>`,
-          `event-memory-date`
+          `event-memory-date`,
         );
       });
     }
@@ -420,11 +419,11 @@ async function createCalendar(isChangeYear = false, isEffect = true) {
       // 이 부분은 혹시라도 공휴일 가져오는 api가 에러일때 또는 접속불가일때 공휴일 이벤트 일정 표시한다.
       const termElement = getDateTemplate(
         eventDay.solarTerm[solarDateKey] || eventDay.solarDynamic[solarDateKey],
-        "term-date"
+        "term-date",
       );
       const holidayElement = getDateTemplate(
         eventDay.solar[solarDateKey] || eventDay.lunar[lunarDateKey],
-        "holi-date"
+        "holi-date",
       );
       box.innerHTML = `<span class='date'><span class='${
         weekOfDayObject[weekOfDay] ?? ""
@@ -435,21 +434,21 @@ async function createCalendar(isChangeYear = false, isEffect = true) {
       // 휴일 표시
       const holidayObjOriginElement = getDateTemplate(
         eventDay.holiday[solarDateKey] || eventDay.solarDynamic[solarDateKey],
-        "term-date"
+        "term-date",
       );
 
       // 음력 이벤트 표시
       const holidayObjElement = getDateTemplate(
         eventDay.lunar[lunarDateKey],
         "holi-date",
-        holidayObjOriginElement
+        holidayObjOriginElement,
       );
 
       // 생일자 표시
       const birthdayObjElement = getDateTemplate(
         eventDay.birthday[solarDateKey],
         "holi-date",
-        holidayObjElement
+        holidayObjElement,
       );
 
       // 근무시간 입력 유무 아이콘 표시
@@ -800,7 +799,59 @@ function createEventList(dataList) {
 
   eventTotal.textContent = EVENT.eventTotalMoney;
 
-  changeEventSelect("all");
+  changeEventSelect();
+}
+
+// 이번월 선택하기
+function changeThisMonth() {
+  const Y = yearSelectBox.value;
+  const M = monthSelectBox.value;
+  const D = new Date(Y, M, 0).getDate();
+  eventStartDate.value =
+    monthSelectBox.value === "all" ? `${Y}-01-01` : `${Y}-${M}-01`;
+  eventEndDate.value =
+    monthSelectBox.value === "all" ? `${Y}-12-31` : `${Y}-${M}-${D}`;
+  changeEventSelect();
+}
+
+// 이번년도 선택하기
+function changeThisYear() {
+  const Y = yearSelectBox.value;
+  const M = monthSelectBox.value;
+  const D = new Date(Y, M, 0).getDate();
+  eventStartDate.value = yearSelectBox.value === "all" ? "--" : `${Y}-${M}-01`;
+  eventEndDate.value = yearSelectBox.value === "all" ? "--" : `${Y}-${M}-${D}`;
+  changeEventSelect();
+  changeThisMonth();
+}
+
+// 월 박스 생성
+function makeMonthSelectBox() {
+  const thisMonth = String(new Date().getMonth() + 1).padStart(2, "0");
+  for (i = 1; i <= 12; i++) {
+    const optionsHtml = document.createElement("option");
+    optionsHtml.textContent = String(i).padStart(2, "0");
+    optionsHtml.value = String(i).padStart(2, "0");
+    monthSelectBox.appendChild(optionsHtml);
+  }
+  monthSelectBox.value = thisMonth;
+  const defaultDate = setTimeout(() => {
+    changeThisYear();
+    clearTimeout(defaultDate);
+  }, 100);
+}
+
+// 년도 박스 생성
+function makeYearSelectBox() {
+  const today = new Date();
+  const Y = today.getFullYear();
+  for (i = Y; i >= Y - 10; i--) {
+    const optionsHtml = document.createElement("option");
+    optionsHtml.textContent = i;
+    optionsHtml.value = i;
+    yearSelectBox.appendChild(optionsHtml);
+  }
+  yearSelectBox.value = Y;
 }
 
 // 이벤트 지역 날짜 범위 변경 (날짜 정렬)

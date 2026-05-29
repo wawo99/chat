@@ -128,6 +128,8 @@ const eventSelect = document.getElementById("eventSelect");
 const eventStartDate = document.getElementById("eventStartDate");
 const eventEndDate = document.getElementById("eventEndDate");
 const todoCheckedEventday = document.getElementById("todoCheckedEventday");
+const yearSelectBox = document.getElementById("yearSelectBox");
+const monthSelectBox = document.getElementById("monthSelectBox");
 
 // 메모리
 const memoryList = document.getElementById("memoryList");

@@ -7,6 +7,8 @@ window.onload = function () {
   getHolidayData();
   getWorkTimeData();
   getSelectEvent();
+  makeYearSelectBox();
+  makeMonthSelectBox();
 };
 
 windowTheme.addEventListener("change", (e) => {
@@ -33,10 +35,10 @@ windowTheme.addEventListener("change", (e) => {
 menuLogo.addEventListener("click", function () {
   const isClose = menuBox.classList.contains("close-menu-animation");
   menuBox.classList.remove(
-    isClose ? "close-menu-animation" : "open-menu-animation"
+    isClose ? "close-menu-animation" : "open-menu-animation",
   );
   menuBox.classList.add(
-    isClose ? "open-menu-animation" : "close-menu-animation"
+    isClose ? "open-menu-animation" : "close-menu-animation",
   );
 });
 

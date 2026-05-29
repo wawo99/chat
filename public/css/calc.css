@@ -332,22 +332,23 @@ body {
 }
 
 .event-love-date {
-  color: red;
+  color: rgb(101, 101, 101);
+  font-size: 11px;
 }
 
 .이브 {
-  font-size: 11px;
   color: #e116a1;
 }
 .나나 {
-  font-size: 11px;
   color: #e6ff02;
 }
 .광주,
 .경주,
 .대구 {
-  font-size: 11px;
   color: #245aa5;
+}
+.쿨 {
+  color: #24a594;
 }
 
 .memory-cell {
@@ -493,4 +494,9 @@ body {
   .today span {
     color: #675d92;
   }
+}
+
+#eventList {
+  overflow-y: auto;
+  height: calc(100vh - 124px);
 }
