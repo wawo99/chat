@@ -7,15 +7,18 @@ async function getDateApi(year) {
   await fetch(url)
     .then(async (res) => {
       const data = await res.json();
-      // console.log({ data })
+      console.log({ data });
       isCalc = false;
       data.forEach((v) => {
         const date = v.date.split("-");
+        if (eventDay.holiday[`${date[1]}${date[2]}`]) return;
         eventDay.holiday[`${date[1]}${date[2]}`] = {
           name: v.name,
-          holiday: v.holiday,
+          // holiday: v.holiday,
+          holiday: v.kind === 1,
         };
       });
+      // console.log({ holiday: eventDay.holiday });
     })
     .catch((e) => {
       isCalc = true;
