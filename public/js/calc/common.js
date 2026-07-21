@@ -7,7 +7,7 @@ async function getDateApi(year) {
   await fetch(url)
     .then(async (res) => {
       const data = await res.json();
-      console.log({ data });
+      // console.log({ data });
       isCalc = false;
       data.forEach((v) => {
         const date = v.date.split("-");
