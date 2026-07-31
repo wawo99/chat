@@ -409,6 +409,7 @@ async function createCalendar(isChangeYear = false, isEffect = true) {
         );
       });
     }
+
     if (EVENT.memoryList && EVENT.memoryList[solarFullDateKey]) {
       Object.values(EVENT.memoryList[solarFullDateKey]).forEach((v) => {
         eventLoveDayElement += getDateTemplate(
@@ -917,6 +918,7 @@ function updateMemory() {
 // 메모리 리스트 생성
 function createMemoryList(dataList) {
   EVENT.memoryList = [];
+  memoryList.innerHTML = "";
 
   // 전체 메모리 배열
   dataList.forEach((v) => {
