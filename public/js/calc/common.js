@@ -276,7 +276,11 @@ function getComputedCalendarWidth() {
 }
 
 // 달력 생성
-async function createCalendar(isChangeYear = false, isEffect = true) {
+async function createCalendar(
+  isChangeYear = false,
+  isEffect = true,
+  isDataLoad = true,
+) {
   // console.log("TEST 1 createCalendar");
   const today = changedDate ? new Date(changedDate) : new Date();
   const currentYear = today.getFullYear();
@@ -538,9 +542,11 @@ async function createCalendar(isChangeYear = false, isEffect = true) {
     });
   }
 
+  if (!isDataLoad) return;
+
   calendarList.innerHTML = "";
 
-  connectionDB("calendar", "selectAll", {});
+  await connectionDB("calendar", "selectAll", {});
 }
 
 // 달력 날짜 변경
@@ -711,6 +717,7 @@ function getTodayDate() {
 
 // 출퇴근 시간 설정 저장
 async function setWorkTime() {
+  console.log("TEST work");
   const workDate = workTimeBtn.dataset.date || getTodayDate();
 
   await connectionDB("work", "insertWorkTime", {

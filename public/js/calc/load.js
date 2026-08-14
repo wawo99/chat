@@ -112,7 +112,7 @@ const observer = new ResizeObserver(async (entries) => {
   //   Math.floor(entries[0].contentRect.width),
   //   isTransitioningWidth === entries[0].contentRect.width
   // );
-  await createCalendar();
+  await createCalendar(false, true, false);
   checkDateList(checkedListData);
 
   const isMobile = window.matchMedia("(max-width: 768px)").matches;

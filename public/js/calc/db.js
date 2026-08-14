@@ -194,7 +194,7 @@ async function crudData(db, storeName, type, calendarData) {
       const index = dataStore.index("msg");
       const range = IDBKeyRange.bound(
         calendarData.firstWord,
-        `${calendarData.firstWord}\uffff`
+        `${calendarData.firstWord}\uffff`,
       );
 
       const list = await new Promise((resolve) => {
@@ -214,7 +214,7 @@ async function crudData(db, storeName, type, calendarData) {
 
       await new Promise((resolve) => {
         index.openCursor(IDBKeyRange.only(calendarData.date)).onsuccess = (
-          e
+          e,
         ) => {
           const cursor = e.target.result;
           if (!cursor) return resolve();
